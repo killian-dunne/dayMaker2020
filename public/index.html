@@ -52,8 +52,9 @@
 
     <script>
       // Your web app's Firebase configuration
+      require('dotenv').config();
       var firebaseConfig = {
-        apiKey: "AIzaSyBxxmypvf-kR4TfUOU7AbVT5U4e08Wuy4s",
+        apiKey: process.env.apiKey,
         authDomain: "daymaker-13c82.firebaseapp.com",
         databaseURL: "https://daymaker-13c82.firebaseio.com",
         projectId: "daymaker-13c82",
