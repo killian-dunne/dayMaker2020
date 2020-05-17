@@ -5,7 +5,6 @@ import NewDay from './components/NewDay';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
 
-
 class App extends React.Component {
   constructor(props) {
     super(props);
