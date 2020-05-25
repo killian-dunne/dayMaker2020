@@ -1,18 +1,18 @@
 import React from 'react'
 import Calendar from './Calendar';
-var dateFormat = require('dateformat');
-
-
+import { displayStopwatch, displayDate, titleDate } from '../utils/dateStuff';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 class NewDay extends React.Component {
   constructor(props) {
     super(props);
-    const d = new Date();
-    const date = this.displayDate(d);
     this.state = {
       seconds: 0,
-      stopwatchString: this.displayStopwatch(0),
-      date: date,
+      stopwatchString: displayStopwatch(0),
+      currentDate: new Date(),
+      planDate: new Date(),
+      planTitle: ''
     }
   }
   componentDidMount() {
@@ -23,54 +23,52 @@ class NewDay extends React.Component {
     clearInterval(this.interval);
   }
 
-  displayDate = (d) => {
-    return dateFormat(d, "ddd, dS mmm yyyy, h:MM TT");
+  handleSelect = planDate => {
+    this.setState({
+      planDate: planDate
+    });
+    const title = document.querySelector('.new-title');
+    if (title) {
+      if (!title.value) {
+        this.setState({planTitle: titleDate(planDate)});
+      }
+    }
   }
 
-  displayStopwatch = (sec) => {
-    let output = `Planning time: `;
-    let hours = Math.floor(sec/3600);
-    let minutes = Math.floor(sec/60);
-    let secondsString = '';
-    if (minutes > 0) {
-      if (hours > 0) {
-        let hoursString = ("00" + hours).slice(-2);
-        output += hoursString + ":";
-      }
-      let minutesString = '';
-      if (minutes > 9) {
-        minutesString = ("00" + (minutes%60)).slice(-2);
-      } else {
-        minutesString = minutes.toString();
-      }
-      output += minutesString + ":";
-      secondsString = ("00" + (sec%60)).slice(-2);
-    } else {
-      secondsString = (sec%60).toString();
-    }
-    output += secondsString + "."
-    return output;
+  handleInput = e => {
+    this.setState({planTitle: e.target.value});
+  }
+
+  handleSubmit = e => {
+    e.preventDefault();
+    
   }
 
   tick = () => {
-    const date = this.displayDate(new Date());
-    const stopwatchString = this.displayStopwatch(this.state.seconds);
+    const stopwatchString = displayStopwatch(this.state.seconds);
     this.setState((state, props) => ({
       stopwatchString: stopwatchString,
       seconds: state.seconds + 1,
-      date: date
+      currentDate: new Date()
     }))
   }
 
   render () {
+    const dateString = displayDate(this.state.currentDate);
     return(
       <div>
         <div className="time">
-            <span>{this.state.stopwatchString}</span>
-          <h4>{this.state.date}</h4>
+          <span>{this.state.stopwatchString}</span>
+          <h4>{dateString}</h4>
         </div>
-        <h3>Add Day</h3>
-        <Calendar />
+        <form onSubmit={this.handleSubmit}>
+          <div className="form-center">
+            <DatePicker inline selected={this.state.planDate} onSelect={this.handleSelect} className="red-border"/>
+            <input className="new-title form-control" type="text" value={this.state.planTitle} placeholder="Plan title" onChange={this.handleInput}/>
+            <button className="btn btn-outline-warning" type="submit">Create</button>
+          </div>
+      </form>
+
       </div>
     );
   }

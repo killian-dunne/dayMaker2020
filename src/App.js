@@ -35,10 +35,8 @@ class App extends React.Component {
       <div className="App">
         <Navbar user={this.state.user}/>
         <div className="gen-area">
-          <div className="dashboard">
-            <Dashboard />
-          </div>
-          <div className="create-new">
+          <Dashboard user={this.state.user}/>
+          <div id="create-new" className="plan-box bg-light">
             <NewDay />
           </div>
         </div>

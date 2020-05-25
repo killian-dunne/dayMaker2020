@@ -1,6 +1,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
-import './index.css';
+import './css/index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
 
@@ -21,10 +21,10 @@ var firebaseConfig = {
 firebase.initializeApp(firebaseConfig);
 const auth = firebase.auth();
 const db = firebase.firestore();
+db.settings({ experimentalForceLongPolling: true });
 
 // Initialize Firebase
 window._DEFAULT_DATA = [auth, db];
-
 
 ReactDOM.render(
   <React.StrictMode>
