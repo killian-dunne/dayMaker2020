@@ -32,7 +32,7 @@ const SignUp = (props) => {
   }
 
   return (
-    <div id="modal-signup" className="modal userState" onClick={toggleSignup}>
+    <div id="modal-signup" className="modal user-state" onClick={toggleSignup}>
       <div className="modal-content">
         <h2>Sign up</h2>
         <form id="signup-form" onSubmit={handleSubmit}>

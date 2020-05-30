@@ -7,7 +7,7 @@ class Dashboard extends React.Component {
   constructor(props) {
     super(props);
     this.state = {
-      plans: []
+      plans: [] // [id, plan.data()]
     }
   }
 
@@ -35,7 +35,7 @@ class Dashboard extends React.Component {
     .then(snapshot => snapshot.docs)
     .then(plans => {
       plans.forEach(plan => {
-        myPlans.push(plan.data());
+        myPlans.push([plan.id, plan.data()]);
       });
     })
     .then(() => {
@@ -50,33 +50,32 @@ class Dashboard extends React.Component {
 
   varyBoxHeights = () => {
     const boxes = document.querySelectorAll('.plan-box.plan-details');
-    console.log('boxes')
-    console.log(boxes.length)
     boxes.forEach(box => {
       box.style.height = `${(Math.random() * 3 + 3)*100}px`;
     });
   }
 
   render () {
-    let plans = this.state.plans.map((plan, idx) => {
+    let plans = this.state.plans.map((planPair, idx) => {
+      let id = planPair[0];
+      let plan = planPair[1];
       let d = new Date(1970, 0, 1, 1);
       d.setSeconds(plan.date.seconds);
-      return <DayPlan key={idx} title={plan.title} actions={plan.actions} keyProp={idx} date={d}/>
+      return <DayPlan key={idx} plan={plan} keyProp={idx} date={d} id={id}/>
     });
 
-    if (this.props.user) {
-      return (
-        <div className="container plans-list">{plans}</div>
-      );
-    } else {
+    if (this.props.user === null) {
       return (
         <div className="container plans-list">
           <div className="tell-login plan-box bg-light">
-            To get started <a className="userState" onClick={toggleSignin}>Sign in</a> or <a onClick={toggleSignup} className="userState">Sign Up</a>.
+            To get started <a className="user-state" onClick={toggleSignin}>Sign in</a> or <a onClick={toggleSignup} className="user-state">Sign Up</a>.
         </div>
       </div>);
+    } else {
+      return (
+        <div className="container plans-list">{plans}</div>
+      );
     }
-
   }
 }
 

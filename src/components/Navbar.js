@@ -1,6 +1,5 @@
 import React from 'react'
 import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
-/* eslint-disable no-unused-expressions */
 
 const Navbar = (props) => {
   let userPresent = props.user ? 'shown' : 'notShown';
@@ -13,6 +12,11 @@ const Navbar = (props) => {
     } else {
       initials = props.user.email[0].toUpperCase();
     }
+  }
+  if (props.user) {
+    var buttonEnable = false;
+  } else {
+    var buttonEnable = true;
   }
 
   const signOut = () => {
@@ -30,13 +34,13 @@ const Navbar = (props) => {
         <span className="navbar-toggler-icon"></span>
       </button>
       <div className="row center navDiv navbar-collapse collapse" id="navbarNav">
-        <h5 className={`userState ${userNotPresent}`} onClick={toggleSignup}>Sign Up</h5>
-        <h5 className={`userState ${userNotPresent}`} onClick={toggleSignin}>Sign In</h5>
+        <h5 className={`user-state ${userNotPresent}`} onClick={toggleSignup}>Sign Up</h5>
+        <h5 className={`user-state ${userNotPresent}`} onClick={toggleSignin}>Sign In</h5>
         <button className={`btn btn-warning userIcon ${userPresent}`}>{initials}</button>
-        <h5 className={`userState ${userPresent}`} onClick={signOut}>Sign Out</h5>
+        <h5 className={`user-state ${userPresent}`} onClick={signOut}>Sign Out</h5>
         <form className="form-inline">
           <input type="search" className="form-control mr-sm-2" placeholder="Search" />
-          <button className="btn btn-outline-warning my-2 my-sm-0" type="submit">Search</button>
+          <button className="btn btn-outline-warning my-2 my-sm-0" disabled={buttonEnable} type="submit">Search</button>
         </form>
       </div>
     </nav>

@@ -37,7 +37,7 @@ class App extends React.Component {
         <div className="gen-area">
           <Dashboard user={this.state.user}/>
           <div id="create-new" className="plan-box bg-light">
-            <NewDay />
+            <NewDay user={this.state.user}/>
           </div>
         </div>
         <div className="display-signup">

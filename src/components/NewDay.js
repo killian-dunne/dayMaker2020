@@ -1,5 +1,4 @@
 import React from 'react'
-import Calendar from './Calendar';
 import { displayStopwatch, displayDate, titleDate } from '../utils/dateStuff';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
@@ -41,7 +40,7 @@ class NewDay extends React.Component {
 
   handleSubmit = e => {
     e.preventDefault();
-    
+
   }
 
   tick = () => {
@@ -54,6 +53,11 @@ class NewDay extends React.Component {
   }
 
   render () {
+    if (this.props.user) {
+      var buttonEnable = false;
+    } else {
+      var buttonEnable = true;
+    }
     const dateString = displayDate(this.state.currentDate);
     return(
       <div>
@@ -65,7 +69,9 @@ class NewDay extends React.Component {
           <div className="form-center">
             <DatePicker inline selected={this.state.planDate} onSelect={this.handleSelect} className="red-border"/>
             <input className="new-title form-control" type="text" value={this.state.planTitle} placeholder="Plan title" onChange={this.handleInput}/>
-            <button className="btn btn-outline-warning" type="submit">Create</button>
+            <div className="tooltip-container">
+              <button className="btn btn-outline-warning" disabled={buttonEnable} type="submit">Create</button>
+            </div>
           </div>
       </form>
 

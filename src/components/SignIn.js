@@ -24,7 +24,7 @@ const SignIn = (props) => {
   }
 
   return (
-    <div id="modal-signin" className="modal userState" onClick={toggleSignin}>
+    <div id="modal-signin" className="modal user-state" onClick={toggleSignin}>
       <div className="modal-content">
         <h2>Sign in</h2>
         <form id="signin-form" onSubmit={handleSubmit}>
