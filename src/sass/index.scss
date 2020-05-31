@@ -1,7 +1,9 @@
 @use 'variables';
+@use 'buzz';
 
-html, #root, .App {
+html, #root, body, .App {
   height: 100%;
+  overflow: auto;
 }
 
 .App {
@@ -15,6 +17,7 @@ nav {
 
 .gen-area {
   flex: 1 1 auto;
+  overflow: auto;
 }
 
 body {
@@ -107,6 +110,7 @@ nav h3, nav form {
 
 .plans-list {
   width: 60%;
+  position: relative;
 }
 
 .plan-box {
@@ -121,6 +125,7 @@ nav h3, nav form {
   float: left;
   display: flex;
   flex-direction: column;
+  position: absolute;
 }
 
 .scroller {
@@ -151,6 +156,7 @@ nav h3, nav form {
   );
   padding: 40px;
   padding-bottom: 0px;
+  position: relative;
 }
 
 .scroller::-webkit-scrollbar {
@@ -363,4 +369,18 @@ button.action-button {
 #action-setup-modal .react-datepicker__tab-loop {
   position: absolute;
   top: 13px;
+}
+
+.plan-created {
+  color: variables.$darker-pink;
+}
+
+.plan-trash {
+  color: variables.$d-grey;
+  position: absolute;
+  top: 20px;
+  right: 40px;
+  :hover {
+    cursor: pointer;
+  }
 }

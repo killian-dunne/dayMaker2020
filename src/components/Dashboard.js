@@ -1,82 +1,66 @@
-import React from 'react';
+import React from 'react'
 import DayPlan from './DayPlan';
 import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
 
+const Dashboard = (props) => {
 
-class Dashboard extends React.Component {
-  constructor(props) {
-    super(props);
-    this.state = {
-      plans: [] // [id, plan.data()]
+  const choosePlanHeight = (plan) => {
+    let numActions = plan.actions.length;
+    let height = 400;
+    if (numActions < 2) {
+      height = 350;
+    } else if (numActions  < 4) {
+      height = 450;
+    } else {
+      height = 600;
     }
+    return height;
   }
 
-  componentDidMount() {
-    if (this.props.user) {
-      this.getPlans();
+  const assignNextPosition = (pA, pB) => {
+    let num = Math.min(parseInt(pA), parseInt(pB));
+    let position = '';
+    if (pA <= pB) {
+      position += 'A';
+    } else {
+      position += 'B';
     }
+    return position + num.toString();
   }
 
-  componentDidUpdate(prevProps) {
-    if (prevProps.user !== this.props.user) {
-      if (this.props.user) {
-        this.getPlans();
-
-      } else {
-        this.setState({plans: []});
-      }
-    }
-  }
-
-  getPlans = () => {
-    const db = window._DEFAULT_DATA[1];
-    let myPlans = [];
-    db.collection('plans').get()
-    .then(snapshot => snapshot.docs)
-    .then(plans => {
-      plans.forEach(plan => {
-        myPlans.push([plan.id, plan.data()]);
-      });
-    })
-    .then(() => {
-      this.setState({
-        plans: myPlans
-      });
-    })
-    .then(() => {
-      this.varyBoxHeights();
-    });
-  }
-
-  varyBoxHeights = () => {
-    const boxes = document.querySelectorAll('.plan-box.plan-details');
-    boxes.forEach(box => {
-      box.style.height = `${(Math.random() * 3 + 3)*100}px`;
-    });
-  }
-
-  render () {
-    let plans = this.state.plans.map((planPair, idx) => {
+  const itemizePlans = () => {
+    let [pA, pB] = [0, 0]; // Next plan starting position for columnA/B
+    let plans = props.plans.map((planPair, idx) => {
       let id = planPair[0];
       let plan = planPair[1];
+      let height = choosePlanHeight(plan);
+      let position = assignNextPosition(pA, pB);
+      if (position[0] === 'A') {
+        pA += height + 60;
+      } else if (position[0] === 'B'){
+        pB += height + 60;
+      }
       let d = new Date(1970, 0, 1, 1);
       d.setSeconds(plan.date.seconds);
-      return <DayPlan key={idx} plan={plan} keyProp={idx} date={d} id={id}/>
+      return <DayPlan key={idx} plan={plan} keyProp={idx} date={d} id={id} height={height} position={position}/>
     });
+    return plans;
+  }
 
-    if (this.props.user === null) {
-      return (
-        <div className="container plans-list">
-          <div className="tell-login plan-box bg-light">
-            To get started <a className="user-state" onClick={toggleSignin}>Sign in</a> or <a onClick={toggleSignup} className="user-state">Sign Up</a>.
+  let plans = itemizePlans();
+  if (props.user === null) {
+    return (
+      <div className="container plans-list">
+        <div className="tell-login plan-box bg-light">
+          To get started <a className="user-state" onClick={toggleSignin}>Sign in</a> or <a onClick={toggleSignup} className="user-state">Sign Up</a>.
         </div>
-      </div>);
-    } else {
-      return (
-        <div className="container plans-list">{plans}</div>
-      );
-    }
+      </div>
+    );
+  } else {
+    return (
+      <div className="container plans-list">{plans}</div>
+    );
   }
 }
 
-export default Dashboard;
+export default Dashboard

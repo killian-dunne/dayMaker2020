@@ -36,5 +36,29 @@ export const titleDate = d => {
 export const compareDates = (date1, date2) => {
   date1.setHours(0,0,0,0);
   date2.setHours(0,0,0,0);
-  return date1.getTime() === date2.getTime();
+  if (date1.getTime() === date2.getTime()) {
+    return 0;
+  } else if (date1 > date2) {
+    return 1;
+  } else {
+    return -1;
+  }
+}
+
+export const compareTimes = (time1, time2) => { // form= 08:15. positive if first larger/later
+  let [aHour, aMin] = time1.split(':');
+  let [bHour, bMin] = time2.split(':');
+  if (aHour > bHour) {
+    return 1;
+  } else if (aHour < bHour) {
+    return -1;
+  } else {
+    if (aMin > bMin) {
+      return 1;
+    } else if (aMin < bMin) {
+      return -1;
+    } else {
+      return 0;
+    }
+  }
 }

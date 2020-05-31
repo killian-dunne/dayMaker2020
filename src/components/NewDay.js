@@ -2,6 +2,9 @@ import React from 'react'
 import { displayStopwatch, displayDate, titleDate } from '../utils/dateStuff';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import { addPlan } from '../utils/dbStuff';
+import { updatePlans } from './Dashboard';
+import Dashboard from './Dashboard';
 
 class NewDay extends React.Component {
   constructor(props) {
@@ -11,7 +14,8 @@ class NewDay extends React.Component {
       stopwatchString: displayStopwatch(0),
       currentDate: new Date(),
       planDate: new Date(),
-      planTitle: ''
+      planTitle: '',
+      displayNotification: 'none'
     }
   }
   componentDidMount() {
@@ -38,9 +42,18 @@ class NewDay extends React.Component {
     this.setState({planTitle: e.target.value});
   }
 
-  handleSubmit = e => {
+  handleSubmit = async e => {
     e.preventDefault();
-
+    await addPlan(this.state.planTitle, this.state.planDate);
+    this.setState({
+      displayNotification: 'block'
+    });
+    Dashboard.forceUpdate();
+    setTimeout(() => {
+      this.setState({
+        displayNotification: 'none'
+      });
+    }, 5000);
   }
 
   tick = () => {
@@ -73,8 +86,10 @@ class NewDay extends React.Component {
               <button className="btn btn-outline-warning" disabled={buttonEnable} type="submit">Create</button>
             </div>
           </div>
-      </form>
-
+        </form>
+        <div className="plan-created" style={{display: this.state.displayNotification}}>
+          Plan created!
+        </div>
       </div>
     );
   }
