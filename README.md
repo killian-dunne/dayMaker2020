@@ -7,17 +7,17 @@ Also, anywhere I have npm written here, yarn usually does the same thing if you 
 
 Check that you've got the following installed:
 * npm https://www.npmjs.com/get-npm
-* react (using npm) 
-  `$ npm install react --save`
+* react (using npm)  
+  `$ npm install react --save`  
   `$ npm install react-dom --save`
 
 ## To Run
 
 Set up your environment by running the following commands on the terminal when you're in the root directory:
-* `npm build`
-* `npm install`
+* `$ npm build`
+* `$ npm install`
 * Also, you'll need an API key and which I have mine saved in my `.env` file in the root directory. Ask me more if you need to. You might also need to put a `credentials.json` file in your root directory if you're not signing in with Google. I think I'll need to come back to this. 
-* `npm start`
+* `$ npm start`
 * Open http://localhost:3000 in your browser. It also autoreloads whenever you save changes in your IDE which is nice. 
 
 
