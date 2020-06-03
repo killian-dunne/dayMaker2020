@@ -3,7 +3,6 @@ import { displayStopwatch, displayDate, titleDate } from '../utils/dateStuff';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { addPlan } from '../utils/dbStuff';
-import { updatePlans } from './Dashboard';
 import Dashboard from './Dashboard';
 
 class NewDay extends React.Component {
@@ -46,9 +45,10 @@ class NewDay extends React.Component {
     e.preventDefault();
     await addPlan(this.state.planTitle, this.state.planDate);
     this.setState({
-      displayNotification: 'block'
+      displayNotification: 'block',
+      planTitle: '',
+      planDate: new Date(),
     });
-    Dashboard.forceUpdate();
     setTimeout(() => {
       this.setState({
         displayNotification: 'none'

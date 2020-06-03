@@ -38,23 +38,18 @@ export const addPlan = async (text, date) => {
   });
 }
 
-export const getPlans = async () => {
-  const db = window._DEFAULT_DATA[1];
-  let myPlans = [];
-  let snapshot = await db.collection('plans').get()
-  let plans = await snapshot.docs
-  plans.forEach(plan => {
-    myPlans.push([plan.id, plan.data()]);
-  });
-  let orderedPlans = myPlans.sort((a,b) => {
-    let [idA, dataA] = a;
-    let [idB, dataB] = b;
-    if (compareDates(dataA.date.toDate(), dataB.date.toDate()) === 1) {
-      return -1;
-    } else {
-      return 1;
-    }
-  });
 
-  return orderedPlans;
+export const deletePlan = async id => {
+  const db = window._DEFAULT_DATA[1];
+  try {
+    await db.collection('plans').doc(id).delete();
+    console.log('plan deleted:', id)
+    let snapshot = await db.collection('actions').where('plan', '==', 'id').get()
+    snapshot.forEach(action => {
+      action.delete();
+    });
+  } catch (err) {
+    console.log('Error when trying to delete plan with id', id);
+    console.log(err.message);
+  }
 }

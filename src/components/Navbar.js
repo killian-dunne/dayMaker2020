@@ -8,15 +8,19 @@ const Navbar = (props) => {
   if (props.user) {
     if (props.user.displayName) {
       let names = props.user.displayName.split(' ');
-      initials = names[0][0].toUpperCase() + names[1][0].toUpperCase();
+      if (names.length > 1) {
+        initials = names[0][0].toUpperCase() + names[1][0].toUpperCase();
+      } else {
+        initials = names[0][0].toUpperCase();
+      }
+
     } else {
       initials = props.user.email[0].toUpperCase();
     }
   }
+  var buttonEnable = true;
   if (props.user) {
-    var buttonEnable = false;
-  } else {
-    var buttonEnable = true;
+    buttonEnable = false;
   }
 
   const signOut = () => {
