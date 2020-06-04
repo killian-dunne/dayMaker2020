@@ -7,8 +7,7 @@ import { enumerateHours, hourHeight, calculateTimeHeight, isToday, isTomorrow } 
 import { compareDates, compareTimes } from '../utils/dateStuff';
 import ActionButton from './ActionButton';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import {addAction} from '../utils/dbStuff';
-
+import { addAction, deleteAction } from '../utils/dbStuff';
 
 const hourDiv = ["00", "15", "30", "45"];
 
@@ -24,15 +23,21 @@ class DayPlan extends React.Component {
 
   componentDidMount() {
     this.scrollPlan();
-    let currentTimeOn = this.isCurrentDay();
-  //  console.log(this.props.title, this.props.keyProp, currentTimeOn)
-    if (currentTimeOn === isToday) {
-      let height = calculateTimeHeight(currentTimeOn)
-      this.setTimeHeight(this.props.keyProp, height);
-    }
+    this.interval = setInterval(() => {
+      let currentTimeOn = this.isCurrentDay();
+      //  console.log(this.props.title, this.props.keyProp, currentTimeOn)
+      if (currentTimeOn === isToday) {
+        let height = calculateTimeHeight(currentTimeOn);
+        this.interval = setInterval(this.setTimeHeight(this.props.keyProp, height), 5000) // every 5 mins
+      }
+    });
     this.props.loadActions(this.props.id);
     this.setPlanPosition();
     this.setPlanHeight();
+  }
+
+  componentWillUnmount() {
+    clearInterval(this.interval)
   }
 
   scrollPlan = () => {
@@ -110,7 +115,6 @@ class DayPlan extends React.Component {
   }
 
   closeAction = () => {
-
     this.setState({
       addActionStart: null,
       addActionEnd: null
@@ -144,7 +148,8 @@ class DayPlan extends React.Component {
         found = false;
       }
     }
-    return possibleActions;
+    return possibleActions; // Array of length 4 with each entry null or
+    // of the form [id, {text: , completed: , plan:...}, height];
   }
 
   setPlanPosition = () => {
@@ -182,12 +187,18 @@ class DayPlan extends React.Component {
   createAction = async (text) => {
     await addAction(text, this.state.addActionStart, this.state.addActionEnd, this.props.id);
     let plans = this.state.plans;
-    this.props.loadActions(this.props.id);
+    await this.props.loadActions(this.props.id);
     this.setState({
       addActionStart: null,
       addActionEnd: null,
       plans
     });
+  }
+
+  removeAction = async (e, id) => {
+    await deleteAction(id);
+    let plans = this.state.plans;
+    this.props.loadActions(this.props.id);
   }
 
   render () {
@@ -211,7 +222,7 @@ class DayPlan extends React.Component {
               <th><div>{times[i]}</div></th>
               <th onClick={this.openAction} className={`.min-${hourDiv[0]} clickable-time`}>
                 {(a[0] !== null && a[0][1]) &&
-                  <ActionButton height={a[0][2]} text={a[0][1].text}/>
+                  <ActionButton height={a[0][2]} text={a[0][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[0][0]}/>
                 }
               </th>
             </tr>
@@ -220,21 +231,21 @@ class DayPlan extends React.Component {
             <tr>
               <td></td><td onClick={this.openAction} className={`.min-${hourDiv[1]} clickable-time`}>
                 {(a[1] !== null && a[1][1]) &&
-                  <ActionButton height={a[1][2]} text={a[1][1].text}/>
+                  <ActionButton height={a[1][2]} text={a[1][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[1][0]}/>
                 }
               </td>
             </tr>
             <tr>
               <td></td><td onClick={this.openAction} className={`.min-${hourDiv[2]} clickable-time`}>
                 {(a[2] !== null && a[2][1]) &&
-                  <ActionButton height={a[2][2]} text={a[2][1].text}/>
+                  <ActionButton height={a[2][2]} text={a[2][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[2][0]}/>
                 }
               </td>
             </tr>
             <tr>
               <td></td><td onClick={this.openAction} className={`.min-${hourDiv[3]} clickable-time`}>
                 {(a[3] !== null && a[3][1]) &&
-                  <ActionButton height={a[3][2]} text={a[3][1].text}/>
+                  <ActionButton height={a[3][2]} text={a[3][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[3][0]}/>
                 }
               </td>
             </tr>
@@ -246,7 +257,7 @@ class DayPlan extends React.Component {
       <div id={`day-plan-${this.props.keyProp}`} className="plan-box bg-light plan-details" ref={this.planDiv}>
         <div className="title-box">
           <input value={this.props.title} className="h3 day-title" onChange={e => {this.props.renamePlan(e, this.props.id)}} onBlur={e => {this.props.updatePlan(e, this.props.id)}}/>
-          <FontAwesomeIcon icon={faTrash} size="1x" className="trash-icon plan-trash hvr-buzz-out" onClick={this.handleDelete}/>
+          <FontAwesomeIcon icon={faTrash} size="1x" className="fa-icon plan-trash hvr-buzz-out" onClick={this.handleDelete}/>
         </div>
         <div className="scroller">
           <div className="now-time hide"></div><FontAwesomeIcon icon={faTint} color="blue" className="drop hide"/>

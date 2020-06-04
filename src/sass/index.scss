@@ -1,5 +1,7 @@
 @use 'variables';
 @use 'buzz';
+@use 'rotate';
+@use 'grow';
 
 html, #root, body, .App {
   height: 100%;
@@ -316,10 +318,11 @@ button.action-button {
     z-index: 10;
     height: inherit !important;
     color: variables.$gentle-pink;
+    text-align: left;
     .ellipsis {
       display: none !important;
     }
-    .full-text.grow {
+    .full-text.grow, .action-icon {
       display: inherit !important;
     }
     .full-text.keep {
@@ -400,12 +403,34 @@ button.action-button {
   color: variables.$darker-pink;
 }
 
-.plan-trash {
-  color: variables.$d-grey;
+.fa-icon {
   position: absolute;
-  top: 20px;
-  right: 40px;
   :hover {
     cursor: pointer;
   }
+}
+
+.plan-trash {
+  color: variables.$d-grey;
+  top: 20px;
+  right: 40px;
+}
+
+.action-trash {
+  right: 15px;
+}
+
+.action-edit {
+  right: 33px;
+}
+
+.action-icon {
+  color: variables.$gentle-pink;
+  top: 8px;
+  display: none;
+}
+
+.action-check {
+  right: 56px;
+  top: 9px;
 }

@@ -29,6 +29,16 @@ export const addAction = async (text, sTime, eTime, planId) => {
   });
 }
 
+export const deleteAction = async id => {
+  const db = window._DEFAULT_DATA[1];
+  try {
+    await db.collection('actions').doc(id).delete();
+  } catch (err) {
+    console.log('Error while trying to delete action:');
+    console.log(err.message);
+  }
+}
+
 export const addPlan = async (text, date) => {
   const db = window._DEFAULT_DATA[1];
   await db.collection('plans').add({
