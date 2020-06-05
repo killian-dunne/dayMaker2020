@@ -104,28 +104,33 @@ class Dashboard extends React.Component {
   return height;
  }
 
-  assignNextPosition = (pA, pB) => {
-  let num = Math.min(parseInt(pA), parseInt(pB));
-  let position = '';
-  if (pA <= pB) {
-    position += 'A';
-  } else {
-    position += 'B';
-  }
-  return position + num.toString();
+  assignNextPosition = (pA, pB, pC) => {
+    let position = '';
+    let num = Math.min(parseInt(pA), parseInt(pB));
+    if (window.innerWidth < 1400) {
+      position += 'C';
+      num = pC;
+    } else if (pA <= pB) {
+      position += 'A';
+    } else {
+      position += 'B';
+    }
+    return position + num.toString();
   }
 
   itemizePlans = () => {
-    let [pA, pB] = [0, 0]; // Next plan starting position for columnA/B
+    let [pA, pB, pC] = [0, 0, 0]; // Next plan starting position for columnA/B or single col
     let plans = this.state.plans.map((planPair, idx) => {
       let id = planPair[0];
       let plan = planPair[1];
       let height = this.choosePlanHeight(plan);
-      let position = this.assignNextPosition(pA, pB);
+      let position = this.assignNextPosition(pA, pB, pC);
       if (position[0] === 'A') {
         pA += height + 60;
-      } else if (position[0] === 'B'){
+      } else if (position[0] === 'B') {
         pB += height + 60;
+      } else if (position[0] === 'C') {
+        pC += height + 60;
       }
       let d = new Date(1970, 0, 1, 1);
       d.setSeconds(plan.date.seconds);

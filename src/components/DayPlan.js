@@ -5,7 +5,7 @@ import ActionSetup from './ActionSetup';
 import { deletePlan } from '../utils/dbStuff';
 import { enumerateHours, hourHeight, calculateTimeHeight, isToday, isTomorrow } from '../utils/lines&timer';
 import { compareDates, compareTimes } from '../utils/dateStuff';
-import ActionButton from './ActionButton';
+import ActionBox from './ActionBox';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
 import { addAction, deleteAction } from '../utils/dbStuff';
 
@@ -100,18 +100,20 @@ class DayPlan extends React.Component {
 
   openAction = e => {
     let box = e.target;
-    let hour = box.closest('table').classList[1].substr(6);
-    if (!box.classList.contains('clickable-time')) {
-      box = box.closest('.clickable-time');
+    if (!box.closest('.action-box') || box.classList.contains('action-edit')) {
+      let hour = box.closest('table').classList[1].substr(6);
+      if (!box.classList.contains('clickable-time')) {
+        box = box.closest('.clickable-time');
+      }
+      let minutes = box.classList[0];
+      let minutesSubstring =  ":" + ("00" + minutes.toString()).slice(-2);
+      let startTime = ("00" + hour.toString()).slice(-2) + minutesSubstring;
+      let endTime = ("00" + (parseInt(hour) + 1).toString()).slice(-2) + minutesSubstring;
+      this.setState({
+        addActionStart: startTime,
+        addActionEnd: endTime
+      });
     }
-    let minutes = box.classList[0];
-    let minutesSubstring =  ":" + ("00" + minutes.toString()).slice(-2);
-    let startTime = ("00" + hour.toString()).slice(-2) + minutesSubstring;
-    let endTime = ("00" + (parseInt(hour) + 1).toString()).slice(-2) + minutesSubstring;
-    this.setState({
-      addActionStart: startTime,
-      addActionEnd: endTime
-    });
   }
 
   closeAction = () => {
@@ -155,9 +157,13 @@ class DayPlan extends React.Component {
   setPlanPosition = () => {
     let position = this.props.position;
     if (position[0] === 'B') {
-      this.planDiv.current.style.left = '560px';
+      this.planDiv.current.style.left = '50%';
     }
     this.planDiv.current.style.top = position.substr(1) + 'px';
+    if (position[0] === 'C') {
+      this.planDiv.current.closest('.plans-list').setAttribute('style', 'display: flex;justify-content:center;');
+    }
+
   }
 
   setPlanHeight = () => {
@@ -222,7 +228,7 @@ class DayPlan extends React.Component {
               <th><div>{times[i]}</div></th>
               <th onClick={this.openAction} className={`.min-${hourDiv[0]} clickable-time`}>
                 {(a[0] !== null && a[0][1]) &&
-                  <ActionButton height={a[0][2]} text={a[0][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[0][0]}/>
+                  <ActionBox height={a[0][2]} text={a[0][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[0][0]}/>
                 }
               </th>
             </tr>
@@ -231,21 +237,21 @@ class DayPlan extends React.Component {
             <tr>
               <td></td><td onClick={this.openAction} className={`.min-${hourDiv[1]} clickable-time`}>
                 {(a[1] !== null && a[1][1]) &&
-                  <ActionButton height={a[1][2]} text={a[1][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[1][0]}/>
+                  <ActionBox height={a[1][2]} text={a[1][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[1][0]}/>
                 }
               </td>
             </tr>
             <tr>
               <td></td><td onClick={this.openAction} className={`.min-${hourDiv[2]} clickable-time`}>
                 {(a[2] !== null && a[2][1]) &&
-                  <ActionButton height={a[2][2]} text={a[2][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[2][0]}/>
+                  <ActionBox height={a[2][2]} text={a[2][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[2][0]}/>
                 }
               </td>
             </tr>
             <tr>
               <td></td><td onClick={this.openAction} className={`.min-${hourDiv[3]} clickable-time`}>
                 {(a[3] !== null && a[3][1]) &&
-                  <ActionButton height={a[3][2]} text={a[3][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[3][0]}/>
+                  <ActionBox height={a[3][2]} text={a[3][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[3][0]}/>
                 }
               </td>
             </tr>

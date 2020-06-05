@@ -2,6 +2,7 @@
 @use 'buzz';
 @use 'rotate';
 @use 'grow';
+@use 'complete';
 
 html, #root, body, .App {
   height: 100%;
@@ -117,13 +118,13 @@ nav h3, nav form {
 
 .plan-box {
   box-shadow: 4px 4px 5px 2px #e2e2d0;
-  border-radius: 5px;
+  border-radius: 10px;
   height: 450px;
 }
 
 .plan-details.plan-box {
   margin: 30px;
-  width: 45%;
+  width: 430px;
   float: left;
   display: flex;
   flex-direction: column;
@@ -159,6 +160,7 @@ nav h3, nav form {
   padding: 40px;
   padding-bottom: 0px;
   position: relative;
+  border-radius: 10px 10px 0px 0px;
 }
 
 .scroller::-webkit-scrollbar {
@@ -305,40 +307,65 @@ td {
   position: relative;
 }
 
-button.action-button {
+div.action-box {
   background-color: variables.$soft-blue;
   color: variables.$gentle-pink;
   position: absolute;
   z-index: 1;
   height: 52.8px;
   top: 0px;
-  width: 300px;overflow: hidden;
-  &:hover {
-    text-overflow: ellipsis;
-    z-index: 10;
-    height: inherit !important;
-    color: variables.$gentle-pink;
-    text-align: left;
-    .ellipsis {
-      display: none !important;
-    }
-    .full-text.grow, .action-icon {
-      display: inherit !important;
-    }
-    .full-text.keep {
-      display: inline !important;
-    }
-  }
+  width: 250px;
+  border-radius: 10px;
+  padding: .35rem .75rem;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;
+  transition: 0s opacity;
+}
+
+div.action-box.hovered {
+  z-index: 10;
+}
+
+
+div.action-box.hovered .full-text {
+  text-align: left;
+  white-space: normal;
+  overflow: visible;
+  width: 165px;
+}
+
+div.action-box.hovered .action-icon {
+  display: inline;
 }
 
 .full-text {
   text-align: left;
   display: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 210px;
+  line-height: 1.5rem;
 }
 
 .ellipsis {
   position: relative;
-  top: -17px;
+  text-align: center;
+  top: -10px;
+}
+
+.inline {
+  display: inline;
+}
+
+.action-box.faded {
+  cursor: auto;
+  opacity: 0.5;
+  transition-delay: 2s;
+  action-icon {
+    cursor: default;
+  }
 }
 
 .hide {
@@ -403,11 +430,8 @@ button.action-button {
   color: variables.$darker-pink;
 }
 
-.fa-icon {
-  position: absolute;
-  :hover {
-    cursor: pointer;
-  }
+path:hover {
+  cursor: pointer;
 }
 
 .plan-trash {
@@ -424,13 +448,20 @@ button.action-button {
   right: 33px;
 }
 
+.fa-icon {
+  position: absolute;
+}
+
 .action-icon {
   color: variables.$gentle-pink;
-  top: 8px;
+  top: 5px;
   display: none;
+  :hover {
+    cursor: pointer;
+  }
 }
 
 .action-check {
   right: 56px;
-  top: 9px;
+  top: 6px;
 }
