@@ -19,7 +19,6 @@ class DayPlan extends React.Component {
       addActionEnd: null,
       addActionText: "",
       addActionID: "",
-      selected: []
     }
     this.planDiv = React.createRef();
   }
@@ -256,16 +255,6 @@ class DayPlan extends React.Component {
     this.props.loadActions(this.props.id);
   }
 
-  selectAction = (id) => {
-    let selected = this.state.selected;
-    if (!selected.includes(id)) {
-      selected.push(id);
-    } else {
-      selected = selected.filter(arrId => arrId !== id);
-    }
-    this.setState({selected});
-  }
-
   render () {
     const times = enumerateHours();
     let lines = [];
@@ -295,7 +284,6 @@ class DayPlan extends React.Component {
                               startTime={a[0][1].times.startTime}
                               endTime={a[0][1].times.endTime}
                               triggerSelect={this.selectAction}
-                              selectedActions={this.state.selected}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -316,7 +304,6 @@ class DayPlan extends React.Component {
                               startTime={a[1][1].times.startTime}
                               endTime={a[1][1].times.endTime}
                               triggerSelect={this.selectAction}
-                              selectedActions={this.state.selected}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -335,7 +322,6 @@ class DayPlan extends React.Component {
                               startTime={a[2][1].times.startTime}
                               endTime={a[2][1].times.endTime}
                               triggerSelect={this.selectAction}
-                              selectedActions={this.state.selected}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -354,7 +340,6 @@ class DayPlan extends React.Component {
                               startTime={a[3][1].times.startTime}
                               endTime={a[3][1].times.endTime}
                               triggerSelect={this.selectAction}
-                              selectedActions={this.state.selected}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}

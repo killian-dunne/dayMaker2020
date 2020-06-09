@@ -60,7 +60,6 @@ const ActionBox = (props) => {
     let box = e.target.closest('.action-box');
     if (box && !e.target.closest('.action-icon')) {
       box.classList.toggle('selected');
-      props.triggerSelect(props.id);
     }
   }
 
@@ -95,6 +94,9 @@ const ActionBox = (props) => {
               let [newStartTime, newEndTime] = [convertHeightToTime(prevStartTime, end - start), convertHeightToTime(prevEndTime, end - start)];
               let text = actionBox.querySelector('.full-text').querySelector('.inline').textContent;
               props.addOrUpdateAction(text, newStartTime, newEndTime, props.planID, completed, actionBox.id);
+              if (actionBox !== clickedBox) {
+                actionBox.classList.remove('selected');
+              }
             }
           }
           handleSelect(eA); // cancel(/duplicate) toggle select
