@@ -1,0 +1,99 @@
+@use '../tools/variables';
+
+div.action-box {
+  background-color: variables.$soft-blue;
+  color: variables.$gentle-pink;
+  position: absolute;
+  z-index: 1;
+  height: 52.8px;
+  top: 0px;
+  width: 250px;
+  border-radius: 10px;
+  padding: .35rem .75rem;
+  -webkit-box-sizing: border-box; /* Safari/Chrome, other WebKit */
+  -moz-box-sizing: border-box;    /* Firefox, other Gecko */
+  box-sizing: border-box;
+  transition: 0s opacity;
+}
+
+div.action-box.selected {
+  background: repeating-linear-gradient(-45deg, #fff5b0 0px, #555599 1px, #555599 11px, #fff5b0 12px);
+}
+
+div.action-box.hovered {
+  z-index: 10;
+}
+
+div.action-box.hovered .full-text {
+  text-align: left;
+  white-space: normal;
+  overflow: visible;
+  width: 150px;
+}
+
+div.action-box.hovered .action-icon {
+  display: inline;
+}
+
+.full-text {
+  text-align: left;
+  display: inherit;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  width: 210px;
+  line-height: 1.5rem;
+}
+
+.ellipsis {
+  position: relative;
+  text-align: center;
+  top: -10px;
+}
+
+.action-box.selected {
+  cursor: grab;
+}
+
+.action-box.dragging {
+  cursor: grabbing;
+}
+
+div.action-box.faded {
+  cursor: auto;
+  opacity: 0.5;
+  transition-delay: 1s;
+  .action-icon, svg, path {
+    cursor: default;
+  }
+}
+
+.action-box .action-times {
+  position: absolute;
+  bottom: 10px;
+  right: 10px;
+  display: none;
+}
+
+.action-box.hovered .action-times {
+  display: inline;
+}
+
+.action-trash {
+  right: 15px;
+}
+
+.action-edit {
+  right: 33px;
+}
+
+.action-icon {
+  color: variables.$gentle-pink;
+  top: 5px;
+  display: none;
+}
+
+.action-check {
+  right: 56px;
+  top: 6px;
+}

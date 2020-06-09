@@ -1,0 +1,74 @@
+@use '../tools/variables';
+
+
+.logo {
+  height: 80px;
+}
+
+.heading {
+  margin-bottom: 0px;
+}
+
+nav h5.user-state {
+  cursor: pointer;
+  padding-left: 20px;
+  margin-bottom: 0px;
+  display: none;
+}
+
+.center {
+  align-items: center;
+}
+
+nav h3, nav form {
+  padding: 20px;
+}
+
+#nav-bootstrap-overrides .navDiv {
+  margin: 0px;
+}
+
+#nav-bootstrap-overrides {
+  justify-content: space-between;
+}
+
+#nav-bootstrap-overrides #navbarNav{
+  flex-grow: initial;
+}
+
+.navDiv.show {
+  flex-direction: column;
+  align-items: initial;
+  padding-left: 10px;
+}
+
+.navDiv.show .user-state, .navDiv.show form {
+  padding: 0px;
+  margin-bottom: 0px;
+}
+
+#nav-bootstrap-overrides .btn {
+  background-color: #fff5b0;
+}
+
+#nav-bootstrap-overrides .shown {
+  display: block;
+}
+
+#nav-bootstrap-overrides .notShown {
+  display: none;
+}
+
+#nav-bootstrap-overrides .userIcon {
+  color: black;
+  font-size: 1.75rem;
+  border-radius: 50%;
+  background-color: #ffc107;
+  font-weight: 500;
+  padding: 0px 0.8rem;
+}
+
+input[type="search"]:focus, input.new-title:focus {
+  box-shadow: 0px 0px 15px variables.$darker-pink;
+  border-color: variables.$darker-pink;
+}

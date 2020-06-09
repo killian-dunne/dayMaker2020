@@ -7,9 +7,9 @@ import { enumerateHours, hourHeight, calculateTimeHeight, isToday, isTomorrow } 
 import { compareDates, compareTimes } from '../utils/dateStuff';
 import ActionBox from './ActionBox';
 import { faTrash } from '@fortawesome/free-solid-svg-icons';
-import { addAction, deleteAction } from '../utils/dbStuff';
+import { setAction, deleteAction } from '../utils/dbStuff';
 
-const hourDiv = ["00", "15", "30", "45"];
+export const hourDiv = ["00", "15", "30", "45"];
 
 class DayPlan extends React.Component {
   constructor(props) {
@@ -17,6 +17,9 @@ class DayPlan extends React.Component {
     this.state = {
       addActionStart: null,
       addActionEnd: null,
+      addActionText: "",
+      addActionID: "",
+      selected: []
     }
     this.planDiv = React.createRef();
   }
@@ -31,9 +34,17 @@ class DayPlan extends React.Component {
         this.interval = setInterval(this.setTimeHeight(this.props.keyProp, height), 5000) // every 5 mins
       }
     });
-    this.props.loadActions(this.props.id);
     this.setPlanPosition();
     this.setPlanHeight();
+  }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.height !== this.props.height) {
+      this.setPlanHeight();
+    }
+    if (prevProps.position !== this.props.position) {
+      this.setPlanPosition();
+    }
   }
 
   componentWillUnmount() {
@@ -49,9 +60,9 @@ class DayPlan extends React.Component {
           let d = new Date();
           let currentTime = d.getHours() + ":" + d.getMinutes();
           if (this.props.actions.length) {
-            let earlier = compareTimes(this.props.actions[0].times[0], currentTime);
+            let earlier = compareTimes(this.props.actions[0].data.times.startTime, currentTime);
             if (earlier < 1) { // use first action time
-              let prevHour = parseInt(this.props.actions[0].times[0]) - 1;
+              let prevHour = parseInt(this.props.actions[0].data.times.startTime) - 1;
               if (prevHour > 0) {
                 scrollHeight = prevHour * hourHeight - 10;
               }
@@ -98,20 +109,39 @@ class DayPlan extends React.Component {
     }
   }
 
-  openAction = e => {
+  openAction = (e, id)=> {
     let box = e.target;
-    if (!box.closest('.action-box') || box.classList.contains('action-edit')) {
-      let hour = box.closest('table').classList[1].substr(6);
-      if (!box.classList.contains('clickable-time')) {
-        box = box.closest('.clickable-time');
+    if (!box.closest('.action-box') || (box.closest('.action-icon') && box.closest('.action-icon').classList.contains('action-edit'))) {
+      let startTime, endTime, text;
+      if (id) {
+        this.removeAction(null, id)
+        let actions = this.props.actions;
+        let myAction;
+        actions.forEach(action => {
+          if (action.id === id) {
+            myAction = action;
+          }
+        });
+        startTime = myAction.data.times.startTime;
+        endTime = myAction.data.times.endTime;
+        text = myAction.data.text;
+      } else {
+        let hour = box.closest('table').classList[1].substr(6);
+        if (!box.classList.contains('clickable-time')) {
+          box = box.closest('.clickable-time');
+        }
+        let minutes = box.classList[0];
+        let minutesSubstring =  ":" + ("00" + minutes.toString()).slice(-2);
+        startTime = ("00" + hour.toString()).slice(-2) + minutesSubstring;
+        endTime = ("00" + (parseInt(hour) + 1).toString()).slice(-2) + minutesSubstring;
+        text = "";
+        id = "";
       }
-      let minutes = box.classList[0];
-      let minutesSubstring =  ":" + ("00" + minutes.toString()).slice(-2);
-      let startTime = ("00" + hour.toString()).slice(-2) + minutesSubstring;
-      let endTime = ("00" + (parseInt(hour) + 1).toString()).slice(-2) + minutesSubstring;
       this.setState({
         addActionStart: startTime,
-        addActionEnd: endTime
+        addActionEnd: endTime,
+        addActionText: text,
+        id
       });
     }
   }
@@ -119,17 +149,23 @@ class DayPlan extends React.Component {
   closeAction = () => {
     this.setState({
       addActionStart: null,
-      addActionEnd: null
+      addActionEnd: null,
+      addActionText: "",
+      addActionID: ""
     });
   }
 
   getActionHeight = (startTime, endTime) => {
+    if (endTime === null){
+      var [endHours, endMinutes] = startTime.split(":");
+      endHours++;
+    } else {
+      var [endHours, endMinutes] = endTime.split(":");
+    }
     let [hours, minutes] = startTime.split(':');
-    let [endHours, endMinutes] = endTime.split(':');
     let height = (endHours - hours) * hourHeight + (endMinutes - minutes) * hourHeight / 60;
     return height;
   }
-
 
   actionWithStart = (hour) => {
     let possibleActions = [];
@@ -137,10 +173,10 @@ class DayPlan extends React.Component {
     let found = false;
     for (let quarter of hourDiv) {
       for (let action of actions) {
-        if (action[1].times[0] === hour + ":" + quarter) {
-          let startTime = action[1].times[0];
-          let endTime = action[1].times[1];
-          possibleActions.push([...action, this.getActionHeight(startTime, endTime)]);
+        if (action.data.times.startTime === hour + ":" + quarter) {
+          let startTime = action.data.times.startTime;
+          let endTime = action.data.times.endTime;
+          possibleActions.push([action.id, action.data, this.getActionHeight(startTime, endTime)]);
           found = true;
         }
       }
@@ -151,32 +187,40 @@ class DayPlan extends React.Component {
       }
     }
     return possibleActions; // Array of length 4 with each entry null or
-    // of the form [id, {text: , completed: , plan:...}, height];
+    // of the form [{id, data: {text: , completed:, ...}}, height];
   }
 
   setPlanPosition = () => {
     let position = this.props.position;
     if (position[0] === 'B') {
       this.planDiv.current.style.left = '50%';
+    } else {
+      this.planDiv.current.style.left = '0%';
     }
     this.planDiv.current.style.top = position.substr(1) + 'px';
     if (position[0] === 'C') {
       this.planDiv.current.closest('.plans-list').setAttribute('style', 'display: flex;justify-content:center;');
     }
-
   }
 
   setPlanHeight = () => {
     this.planDiv.current.style.height = this.props.height.toString() + 'px';
   }
 
-  handleDelete = e => {
+  handleDelete = async e => {
     e.preventDefault();
-    deletePlan(this.props.id);
+    await deletePlan(this.props.id);
+    this.props.removePlan(this.props.id);
+  }
+
+  changeActionText = e => {
+    let text = e.target.value;
+    this.setState({
+      addActionText: text
+    });
   }
 
   changeStartTime = date => {
-    console.log('onChange')
     let time = ("00" + date.getHours()).slice(-2) + ":" + ("00" + date.getMinutes()).slice(-2);
     this.setState({
       addActionStart: time
@@ -190,21 +234,36 @@ class DayPlan extends React.Component {
     });
   }
 
-  createAction = async (text) => {
-    await addAction(text, this.state.addActionStart, this.state.addActionEnd, this.props.id);
-    let plans = this.state.plans;
+  addOrUpdateAction = async (text, startTime, endTime, planId, completed, actionID) => {
+    if (actionID) {
+      await setAction(text, startTime, endTime, planId, completed, actionID);
+    } else {
+      await setAction(text, this.state.addActionStart, this.state.addActionEnd, this.props.id);
+    }
     await this.props.loadActions(this.props.id);
+    let plans = this.state.plans;
     this.setState({
       addActionStart: null,
       addActionEnd: null,
+      addActionText: "",
+      addActionID: "",
       plans
     });
   }
 
   removeAction = async (e, id) => {
-    await deleteAction(id);
-    let plans = this.state.plans;
+    await deleteAction(this.props.id, id);
     this.props.loadActions(this.props.id);
+  }
+
+  selectAction = (id) => {
+    let selected = this.state.selected;
+    if (!selected.includes(id)) {
+      selected.push(id);
+    } else {
+      selected = selected.filter(arrId => arrId !== id);
+    }
+    this.setState({selected});
   }
 
   render () {
@@ -218,40 +277,80 @@ class DayPlan extends React.Component {
       let hour = ("00" + i.toString()).slice(-2);
       let a = this.actionWithStart(hour); // returns actions starting this hour
       if (addHour && addHour === hour) {
-        let height = this.getActionHeight(this.state.addActionStart, this.state.addActionEnd)
-        a[idx] = ['addId', {text: null}, height];
+        let height = this.getActionHeight(this.state.addActionStart, this.state.addActionEnd);
+        a[idx] = ['addId', {text: null, times: [this.state.addActionStart, this.state.addActionEnd], completed: false, plan: this.props.id}, height];
       }
       lines.push(
         <table key={i} className={`times table-${i}`}>
           <thead>
             <tr>
               <th><div>{times[i]}</div></th>
-              <th onClick={this.openAction} className={`.min-${hourDiv[0]} clickable-time`}>
+              <th className={`.min-${hourDiv[0]} clickable-time`} onClick={this.openAction}>
                 {(a[0] !== null && a[0][1]) &&
-                  <ActionBox height={a[0][2]} text={a[0][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[0][0]}/>
+                  <ActionBox  height={a[0][2]}
+                              text={a[0][1].text}
+                              removeAction={this.removeAction}
+                              editAction={this.openAction}
+                              id={a[0][0]}
+                              startTime={a[0][1].times.startTime}
+                              endTime={a[0][1].times.endTime}
+                              triggerSelect={this.selectAction}
+                              selectedActions={this.state.selected}
+                              date={this.props.date}
+                              planID={this.props.id}/>
                 }
               </th>
             </tr>
           </thead>
           <tbody>
             <tr>
-              <td></td><td onClick={this.openAction} className={`.min-${hourDiv[1]} clickable-time`}>
+              <td></td><td className={`.min-${hourDiv[1]} clickable-time`} onClick={this.openAction}>
                 {(a[1] !== null && a[1][1]) &&
-                  <ActionBox height={a[1][2]} text={a[1][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[1][0]}/>
+                  <ActionBox  height={a[1][2]}
+                              text={a[1][1].text}
+                              removeAction={this.removeAction}
+                              editAction={this.openAction}
+                              id={a[1][0]}
+                              startTime={a[1][1].times.startTime}
+                              endTime={a[1][1].times.endTime}
+                              triggerSelect={this.selectAction}
+                              selectedActions={this.state.selected}
+                              date={this.props.date}
+                              planID={this.props.id}/>
                 }
               </td>
             </tr>
             <tr>
-              <td></td><td onClick={this.openAction} className={`.min-${hourDiv[2]} clickable-time`}>
+              <td></td><td className={`.min-${hourDiv[2]} clickable-time`} onClick={this.openAction}>
                 {(a[2] !== null && a[2][1]) &&
-                  <ActionBox height={a[2][2]} text={a[2][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[2][0]}/>
+                  <ActionBox  height={a[2][2]}
+                              text={a[2][1].text}
+                              removeAction={this.removeAction}
+                              editAction={this.openAction}
+                              id={a[2][0]}
+                              startTime={a[2][1].times.startTime}
+                              endTime={a[2][1].times.endTime}
+                              triggerSelect={this.selectAction}
+                              selectedActions={this.state.selected}
+                              date={this.props.date}
+                              planID={this.props.id}/>
                 }
               </td>
             </tr>
             <tr>
-              <td></td><td onClick={this.openAction} className={`.min-${hourDiv[3]} clickable-time`}>
+              <td></td><td className={`.min-${hourDiv[3]} clickable-time`} onClick={this.openAction}>
                 {(a[3] !== null && a[3][1]) &&
-                  <ActionBox height={a[3][2]} text={a[3][1].text} removeAction={this.removeAction} editAction={this.editAction} id={a[3][0]}/>
+                  <ActionBox  height={a[3][2]}
+                              text={a[3][1].text}
+                              removeAction={this.removeAction}
+                              editAction={this.openAction}
+                              id={a[3][0]}
+                              startTime={a[3][1].times.startTime}
+                              endTime={a[3][1].times.endTime}
+                              triggerSelect={this.selectAction}
+                              selectedActions={this.state.selected}
+                              date={this.props.date}
+                              planID={this.props.id}/>
                 }
               </td>
             </tr>
@@ -274,10 +373,14 @@ class DayPlan extends React.Component {
           <ActionSetup  startTime={this.state.addActionStart}
                         endTime={this.state.addActionEnd}
                         planId={this.props.id}
-                        createAction={this.createAction}
+                        createAction={this.addOrUpdateAction}
                         changeStartTime={this.changeStartTime}
                         changeEndTime={this.changeEndTime}
                         closeAction={this.closeAction}
+                        text={this.state.addActionText}
+                        changeText={this.changeActionText}
+                        actionID={this.state.addActionID}
+                        updateAction={this.addOrUpdateAction}
                         />
         }
       </div>

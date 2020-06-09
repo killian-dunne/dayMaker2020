@@ -1,3 +1,6 @@
+import { hourHeight } from './lines&timer';
+import { hourDiv } from '../components/DayPlan';
+
 var dateFormat = require('dateformat');
 
 export const displayStopwatch = (sec) => {
@@ -61,4 +64,35 @@ export const compareTimes = (time1, time2) => { // form= 08:15. positive if firs
       return 0;
     }
   }
+}
+
+export const convertHeightToTime = (time, height) => {
+  if (height === 0) {
+    return time;
+  }
+  let add = height > 0 ? true : false;
+  if (!add) {
+    height = -height;
+  }
+  let numHours = Math.floor(height / hourHeight);
+  let numMins = (height - numHours * hourHeight) * 60 / hourHeight;
+  numHours = add ? numHours : -numHours;
+  let roundMins = add ? 45 : -60;
+  for (let i = 1; i < hourDiv.length; i++) {
+    if (numMins < hourDiv[i]) {
+      roundMins = add ? hourDiv[i-1] : -hourDiv[i];
+      break;
+    }
+  }
+  let [prevHour, prevMin] = time.split(':');
+  let mins = prevMin + roundMins;
+  let hours = prevHour + numHours;
+  if (mins > 59) {
+    mins %= 60;
+    hours ++;
+  } else if (mins < 0) {
+    mins += 60;
+    hours --;
+  }
+  return ("00" + hours).slice(-2) + ":" + ("00" + mins).slice(-2);
 }

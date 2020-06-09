@@ -14,7 +14,8 @@ class NewDay extends React.Component {
       currentDate: new Date(),
       planDate: new Date(),
       planTitle: '',
-      displayNotification: 'none'
+      displayNotification: 'none',
+      displayNotificationText: 'Plan created!'
     }
   }
   componentDidMount() {
@@ -43,15 +44,27 @@ class NewDay extends React.Component {
 
   handleSubmit = async e => {
     e.preventDefault();
-    await addPlan(this.state.planTitle, this.state.planDate);
-    this.setState({
-      displayNotification: 'block',
-      planTitle: '',
-      planDate: new Date(),
-    });
+    if (this.state.planTitle) {
+      this.setState({
+        displayNotification: 'block',
+        planTitle: '',
+        planDate: new Date(),
+      });
+      await addPlan(this.state.planTitle, this.state.planDate);
+      this.props.updatePlans();
+    } else {
+      this.setState({
+        displayNotification: 'block',
+        planTitle: '',
+        planDate: new Date(),
+        displayNotificationText: 'Add a title!'
+      })
+    }
+
     setTimeout(() => {
       this.setState({
-        displayNotification: 'none'
+        displayNotification: 'none',
+        displayNotificationText: 'Plan created!'
       });
     }, 5000);
   }

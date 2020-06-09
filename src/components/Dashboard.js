@@ -3,8 +3,7 @@ import DayPlan from './DayPlan';
 import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
 import { compareDates } from '../utils/dateStuff';
 import NewDay from './NewDay';
-import { getActions } from '../utils/dbStuff';
-
+import { getActions, setAction } from '../utils/dbStuff';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -27,8 +26,8 @@ class Dashboard extends React.Component {
   updatePlan = async (e, id) => {
     let myPlan;
     for (let plan of this.state.plans) {
-      if (plan[0] === id) {
-        myPlan = plan[1];
+      if (plan.id === id) {
+        myPlan = plan.data;
       }
     }
     if (!myPlan) {
@@ -36,43 +35,46 @@ class Dashboard extends React.Component {
       return;
     }
     const db = window._DEFAULT_DATA[1];
-    await db.collection('plans').doc(id).set({
-      actions: myPlan.actions,
+    await db.collection('plans').doc(id).update({
+      title: myPlan.title,
       date: myPlan.date,
-      title: myPlan.title
     });
     return;
   }
 
   getPlans = async () => {
     const db = window._DEFAULT_DATA[1];
-    await db.collection('plans').onSnapshot(snapshot => {
-      let myPlans = [];
-      let plans = snapshot.docs;
-      plans.forEach(plan => {
-        myPlans.push([plan.id, plan.data()]);
+    let myPlans = [];
+    const querySnapshot = await db.collection('plans').get();
+    querySnapshot.forEach(plan => {
+      getActions(plan.id).then(actions => {
+        myPlans.push({id: plan.id, data: {...plan.data(), actions}});
+        let orderedPlans = myPlans.sort((a, b) => {
+          if (compareDates(a.data.date.toDate(), b.data.date.toDate()) === 1) {
+            return -1;
+          } else {
+            return 1;
+          }
+        });
+        this.setState({plans: orderedPlans});
+      }).catch(err => {
+        console.log('Error getting actions', err.message)
       });
-      let orderedPlans = myPlans.sort((a, b) => {
-        let [idA, dataA] = a;
-        let [idB, dataB] = b;
-        if (compareDates(dataA.date.toDate(), dataB.date.toDate()) === 1) {
-          return -1;
-        } else {
-          return 1;
-        }
-      });
-      this.setState({plans: orderedPlans})
-      return;
-    })
+    });
     return;
   }
 
-  loadActions = async (planId) => {
+  removePlan = (id) => {
+    let plans = this.state.plans.filter(plan => plan.id !== id);
+    this.setState({plans});
+  }
+
+  updateActions = async (planId) => {
     let myActions = await getActions(planId)
     let myPlans = this.state.plans;
     let plans = myPlans.map(plan => {
-      if (plan[0] === planId) {
-        plan[1].actions = myActions;
+      if (plan.id === planId) {
+        plan.data.actions = myActions;
       }
       return plan;
     });
@@ -83,8 +85,8 @@ class Dashboard extends React.Component {
     let title = e.target.value;
     let myPlans = this.state.plans;
     let plans = myPlans.map(plan => {
-      if (plan[0] === id) {
-        plan[1].title = title;
+      if (plan.id === id) {
+        plan.data.title = title;
       }
       return plan;
     });
@@ -92,17 +94,17 @@ class Dashboard extends React.Component {
   }
 
   choosePlanHeight = (plan) => {
-  let numActions = plan.actions.length;
-  let height = 400;
-  if (numActions < 2) {
-    height = 350;
-  } else if (numActions  < 4) {
-    height = 450;
-  } else {
-    height = 600;
+    let numActions = plan.actions.length;
+    let height = 400;
+    if (numActions < 2) {
+      height = 350;
+    } else if (numActions  < 4) {
+      height = 450;
+    } else {
+      height = 600;
+    }
+    return height;
   }
-  return height;
- }
 
   assignNextPosition = (pA, pB, pC) => {
     let position = '';
@@ -120,10 +122,10 @@ class Dashboard extends React.Component {
 
   itemizePlans = () => {
     let [pA, pB, pC] = [0, 0, 0]; // Next plan starting position for columnA/B or single col
-    let plans = this.state.plans.map((planPair, idx) => {
-      let id = planPair[0];
-      let plan = planPair[1];
-      let height = this.choosePlanHeight(plan);
+    return this.state.plans.map((plan, idx) => {
+      let id = plan.id;
+      let data = plan.data;
+      let height = this.choosePlanHeight(data);
       let position = this.assignNextPosition(pA, pB, pC);
       if (position[0] === 'A') {
         pA += height + 60;
@@ -133,23 +135,23 @@ class Dashboard extends React.Component {
         pC += height + 60;
       }
       let d = new Date(1970, 0, 1, 1);
-      d.setSeconds(plan.date.seconds);
+      d.setSeconds(data.date.seconds);
       return <DayPlan key={idx}
-                      plan={plan}
+                      plan={data}
                       keyProp={idx}
                       date={d}
                       id={id}
                       height={height}
                       position={position}
                       renamePlan={this.renamePlan}
-                      actions={plan.actions}
-                      loadActions={this.loadActions}
-                      title={plan.title}
+                      actions={data.actions}
+                      loadActions={this.updateActions}
+                      title={data.title}
                       getPlans={this.getPlans}
                       updatePlan={this.updatePlan}
+                      removePlan={this.removePlan}
                       />
-     });
-     return plans;
+    });
   }
 
   render() {
@@ -172,7 +174,7 @@ class Dashboard extends React.Component {
       <div className="gen-area">
         {returnJSX}
         <div id="create-new" className="plan-box bg-light">
-          <NewDay user={this.props.user}/>
+          <NewDay user={this.props.user} updatePlans={this.getPlans}/>
         </div>
       </div>
     );

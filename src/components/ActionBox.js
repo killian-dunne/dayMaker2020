@@ -1,9 +1,10 @@
-import React, { useEffect } from 'react';
+import React, { useState } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
+import { convertHeightToTime } from '../utils/dateStuff';
+import { setAction } from '../utils/dbStuff';
 
 const ActionBox = (props) => {
-  // let size = props.height < 14 ? "small" : "normal";
   let height = props.height;
   if (height < 14) {
     var [hideA, hideB] = ["hide", ""];
@@ -11,29 +12,30 @@ const ActionBox = (props) => {
     var [hideA, hideB] = ["", "hide"];
   }
 
-
   const setHoverHeight = (e, enter) => {
     let box = e.target.closest('.action-box');
     let textArea = box.querySelector('.full-text');
     let ellipArea = box.querySelector('.ellipsis');
-     // Get things
-    // let textClass = height > textArea.scrollHeight ? "keep" : "grow";
+    let top = box.style.top;
 
-    box.classList.toggle('hovered'); // Hover button
-
+    box.classList.toggle('hovered');
+    let increment = 20;
     if (height < 14) {
       textArea.classList.toggle('hide');
       ellipArea.classList.toggle('hide');
-      box.setAttribute('style', `height: ${box.scrollHeight + 10}px !important`);
+      box.setAttribute('style', `height: ${box.scrollHeight + increment}px !important`);
+    } else if (height < 50) {
+      increment = 30;
+      box.setAttribute('style', `height: ${textArea.scrollHeight + increment}px !important`);
     } else {
-      box.setAttribute('style', `height: ${textArea.scrollHeight + 10}px !important`);
+      increment = 10;
+      box.setAttribute('style', `height: ${textArea.scrollHeight + increment}px !important`);
     }
-    if (!enter || height > textArea.scrollHeight) {
+    if (!enter || height > textArea.scrollHeight +  increment) {
 
       box.setAttribute('style', `height: ${height}px !important`);
     }
-
-    // textArea.classList.toggle(textClass);
+    box.style.top = top;
   }
 
   const completeAction = e => {
@@ -41,18 +43,58 @@ const ActionBox = (props) => {
     let textArea = box.querySelector('.inline');
     textArea.classList.add('completed');
     box.classList.add('faded');
+    let classes = ['hvr-grow', 'hvr-rotate', 'hvr-buzz-out'];
+    box.querySelectorAll('svg').forEach(icon => {
+      classes.forEach(myClass => {
+        if (icon.classList.contains(myClass)) {
+          icon.classList.remove(myClass);
+        }
+      });
+    });
+  }
+
+  const handleSelect = e => {
+    let box = e.target.closest('.action-box');
+    if (box && !e.target.closest('.action-icon')) {
+      box.classList.toggle('selected');
+      props.triggerSelect(props.id);
+    }
+  }
+
+  const handleDownClick = eA => {
+    eA.persist();
+    let clickedBox = eA.target.closest('.action-box');
+    if (eA.button === 0 && clickedBox && !eA.target.closest('.action-icon') && clickedBox.classList.contains('selected')) {
+      let start = eA.clientY, offset = clickedBox.offsetTop, end = eA.clientY;
+      document.body.onmousemove = eB => {
+        end = eB.clientY;
+        clickedBox.style.top = (offset + end - start) + 'px';
+      };
+      document.body.onmouseup = eC => {
+        if (Math.abs(end - start) < 5) { // If barely dragged
+          clickedBox.style.top = offset + 'px'; // return to original position
+        } else {
+          let completed = clickedBox.classList.contains('completed');
+          let newStartTime = convertHeightToTime(props.startTime, end - start);
+          let newEndTime = convertHeightToTime(props.endTime, end - start);
+          setAction(props.text, newStartTime, newEndTime, props.planID, completed, props.id);
+          handleSelect(eA); // cancel(/duplicate) toggle select
+        }
+        document.body.onmousemove = document.body.onmouseup = null;
+      };
+    }
   }
 
   return (
-    <div className="action-box" style={{height: height +'px'}} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
-      <div className="action-icon action-check fa-icon">
-        <FontAwesomeIcon icon={faCheckSquare} size="1x" className="hvr-grow" onClick={completeAction}/>
+    <div id={props.id} className="action-box" style={{height: height +'px'}} onClick={handleSelect} onMouseDown={handleDownClick} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
+      <div className="action-icon action-check fa-icon" onClick={completeAction}>
+        <FontAwesomeIcon icon={faCheckSquare} size="1x" className="hvr-grow"/>
       </div>
-      <div className="action-icon action-edit fa-icon">
-        <FontAwesomeIcon icon={faEdit} size="1x" className="hvr-rotate" onClick={e => this.props.editAction(e, this.props.id)}/>
+      <div className="action-icon action-edit fa-icon" onClick={e => props.editAction(e, props.id)}>
+        <FontAwesomeIcon icon={faEdit} size="1x" className="hvr-rotate"/>
       </div>
-      <div className="action-icon action-trash fa-icon">
-        <FontAwesomeIcon icon={faTrash} size="1x" className="hvr-buzz-out" onClick={e => this.props.removeAction(e, this.props.id)}/>
+      <div className="action-icon action-trash fa-icon" onClick={e => props.removeAction(e, props.id)}>
+        <FontAwesomeIcon icon={faTrash} size="1x" className="hvr-buzz-out"/>
       </div>
       <div className={`full-text ${hideA}`}>
         <div className="inline">
@@ -61,6 +103,9 @@ const ActionBox = (props) => {
       </div>
       <div className={`ellipsis ${hideB}`}>
         ...
+      </div>
+      <div className="action-times">
+        {props.startTime}-{props.endTime}
       </div>
     </div>
   )

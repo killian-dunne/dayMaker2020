@@ -1,0 +1,58 @@
+@use '../tools/variables';
+
+.modal {
+  background-color: rgba(100, 100, 100, 0.7) ;
+  position: fixed;
+  overflow-y: hidden;
+}
+
+#modal-signin.shown,
+#modal-signup.shown {
+  display: block;
+}
+
+#modal-signup > .modal-content,
+#modal-signin > .modal-content {
+  width: 40%;
+  left: 30%;
+  top: 20%;
+  padding: 30px;
+}
+
+#modal-signup input,
+#modal-signin input {
+  width: 100%;
+  margin: 10px;
+  margin-left: 0px;
+  border: none;
+  border-bottom: 2px lightgrey solid;
+}
+
+#modal-signup input:focus,
+#modal-signin input:focus {
+  outline: none;
+  border-bottom: solid 3px #ffc107;
+}
+
+#modal-signup button,
+#modal-signin button {
+  float: right;
+}
+
+
+.tell-login {
+  text-align: center;
+  width: 400px;
+  padding: 30px;
+  margin: 30px auto;
+  height: 150px;
+}
+
+.tell-login a.user-state {
+    color: variables.$soft-blue;
+  &:hover {
+    text-decoration: underline;
+    color: variables.$soft-blue;
+    cursor: pointer;
+  }
+}

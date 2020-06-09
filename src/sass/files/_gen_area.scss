@@ -1,0 +1,112 @@
+@use '../tools/variables';
+
+.gen-area {
+  background-color: #fff5b0;
+  display: flex;
+}
+
+.plans-list {
+  width: 60%;
+  position: relative;
+}
+
+.plan-box {
+  box-shadow: 4px 4px 5px 2px #e2e2d0;
+  border-radius: 10px;
+  height: 450px;
+}
+
+.plan-details.plan-box {
+  margin: 30px;
+  width: 430px;
+  float: left;
+  display: flex;
+  flex-direction: column;
+  position: absolute;
+}
+
+.scroller {
+  padding: 40px;
+  padding-top: 0px;
+  position: relative;
+  overflow-y: scroll;
+  height: 100%;
+}
+
+.plan-details:nth-child(even) {
+  margin-right: 0px;
+}
+
+.title-box {
+  background: linear-gradient(
+    to top left,
+    variables.$gentle-pink,
+    variables.$back-white
+  );
+  padding: 40px;
+  padding-bottom: 0px;
+  padding-top: 30px;
+  position: relative;
+  border-radius: 10px 10px 0px 0px;
+}
+
+.day-title {
+  padding-top: 8px;
+  background: border-box;
+  outline: none;
+  border: none;
+}
+
+.scroller::-webkit-scrollbar {
+  display: none;
+}
+
+.now-time {
+  border-bottom: solid blue 2px;
+  position: relative;
+  width: calc(100% - 50px);
+  left: 50px;
+}
+
+.drop {
+  position: relative;
+  left: 45px;
+}
+
+table {
+  width: 100%;
+  empty-cells: show;
+}
+
+th {
+  font-weight: normal;
+}
+
+th:first-child {
+  width: 50px;
+}
+
+th:last-child {
+  border-top: 1px solid grey;
+}
+
+th > div {
+  overflow: hidden;
+  position: relative;
+  top: -0.5rem;
+}
+
+tr {
+  height: .8rem;
+  line-height: .8rem;
+}
+
+td {
+  position: relative;
+}
+
+.plan-trash {
+  color: variables.$d-grey;
+  top: 20px;
+  right: 40px;
+}
