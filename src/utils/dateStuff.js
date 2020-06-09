@@ -85,8 +85,8 @@ export const convertHeightToTime = (time, height) => {
     }
   }
   let [prevHour, prevMin] = time.split(':');
-  let mins = prevMin + roundMins;
-  let hours = prevHour + numHours;
+  let mins = parseInt(prevMin) + parseInt(roundMins);
+  let hours = parseInt(prevHour) + parseInt(numHours);
   if (mins > 59) {
     mins %= 60;
     hours ++;

@@ -17,8 +17,11 @@ const ActionBox = (props) => {
     let textArea = box.querySelector('.full-text');
     let ellipArea = box.querySelector('.ellipsis');
     let top = box.style.top;
-
-    box.classList.toggle('hovered');
+    if (box.parentNode.querySelector(':hover') === box) {
+      box.classList.add('hovered');
+    } else {
+      box.classList.remove('hovered');
+    }
     let increment = 20;
     if (height < 14) {
       textArea.classList.toggle('hide');
@@ -66,18 +69,34 @@ const ActionBox = (props) => {
     let clickedBox = eA.target.closest('.action-box');
     if (eA.button === 0 && clickedBox && !eA.target.closest('.action-icon') && clickedBox.classList.contains('selected')) {
       let start = eA.clientY, offset = clickedBox.offsetTop, end = eA.clientY;
+      let allActions = document.querySelectorAll('.action-box');
+      let planActionIds = props.plan.actions.map(action => action.id);
+      let allOffsets = [];
+      allActions.forEach(actionBox => {
+        allOffsets.push(actionBox.offsetTop);
+      });
+
       document.body.onmousemove = eB => {
         end = eB.clientY;
-        clickedBox.style.top = (offset + end - start) + 'px';
+        for (let i = 0; i < allActions.length; i++) {
+          if (planActionIds.includes(allActions[i].id) && allActions[i].classList.contains('selected')) {
+            allActions[i].style.top = (allOffsets[i] + end - start) + 'px';
+          }
+        }
       };
       document.body.onmouseup = eC => {
         if (Math.abs(end - start) < 5) { // If barely dragged
           clickedBox.style.top = offset + 'px'; // return to original position
         } else {
-          let completed = clickedBox.classList.contains('completed');
-          let newStartTime = convertHeightToTime(props.startTime, end - start);
-          let newEndTime = convertHeightToTime(props.endTime, end - start);
-          setAction(props.text, newStartTime, newEndTime, props.planID, completed, props.id);
+          for (let actionBox of allActions) {
+            if (planActionIds.includes(actionBox.id) && actionBox.classList.contains('selected')) {
+              let completed = actionBox.classList.contains('completed');
+              let [prevStartTime, prevEndTime] = actionBox.querySelector('.action-times').textContent.split("-");
+              let [newStartTime, newEndTime] = [convertHeightToTime(prevStartTime, end - start), convertHeightToTime(prevEndTime, end - start)];
+              let text = actionBox.querySelector('.full-text').querySelector('.inline').textContent;
+              props.addOrUpdateAction(text, newStartTime, newEndTime, props.planID, completed, actionBox.id);
+            }
+          }
           handleSelect(eA); // cancel(/duplicate) toggle select
         }
         document.body.onmousemove = document.body.onmouseup = null;

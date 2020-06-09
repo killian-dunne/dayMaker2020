@@ -29,11 +29,10 @@ export const setAction = async (text, startTime, endTime, planId, completed, act
   if (completed !== undefined) {
     data.completed = completed;
   }
-  let actions = await db.collection('plans').doc(planId).collection('actions');
   if (actionID) {
-    await actions.doc(actionID).update(data);
+    await db.collection('plans').doc(planId).collection('actions').doc(actionID).update(data);
   } else {
-    await actions.add(data);
+    await db.collection('plans').doc(planId).collection('actions').add(data);
   }
 }
 

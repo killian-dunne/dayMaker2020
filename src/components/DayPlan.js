@@ -297,7 +297,9 @@ class DayPlan extends React.Component {
                               triggerSelect={this.selectAction}
                               selectedActions={this.state.selected}
                               date={this.props.date}
-                              planID={this.props.id}/>
+                              planID={this.props.id}
+                              addOrUpdateAction={this.addOrUpdateAction}
+                              plan={this.props.plan}/>
                 }
               </th>
             </tr>
@@ -316,7 +318,9 @@ class DayPlan extends React.Component {
                               triggerSelect={this.selectAction}
                               selectedActions={this.state.selected}
                               date={this.props.date}
-                              planID={this.props.id}/>
+                              planID={this.props.id}
+                              addOrUpdateAction={this.addOrUpdateAction}
+                              plan={this.props.plan}/>
                 }
               </td>
             </tr>
@@ -333,7 +337,9 @@ class DayPlan extends React.Component {
                               triggerSelect={this.selectAction}
                               selectedActions={this.state.selected}
                               date={this.props.date}
-                              planID={this.props.id}/>
+                              planID={this.props.id}
+                              addOrUpdateAction={this.addOrUpdateAction}
+                              plan={this.props.plan}/>
                 }
               </td>
             </tr>
@@ -350,7 +356,9 @@ class DayPlan extends React.Component {
                               triggerSelect={this.selectAction}
                               selectedActions={this.state.selected}
                               date={this.props.date}
-                              planID={this.props.id}/>
+                              planID={this.props.id}
+                              addOrUpdateAction={this.addOrUpdateAction}
+                              plan={this.props.plan}/>
                 }
               </td>
             </tr>
