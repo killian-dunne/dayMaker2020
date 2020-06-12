@@ -39,6 +39,10 @@
   background-color: variables.$back-white;
 }
 
+#action-setup-modal .time-input {
+  width: 80px;
+}
+
 #action-setup-modal input:focus {
   outline: none;
   border-bottom: solid 3px #ffc107;
@@ -56,4 +60,8 @@
 
 .times{
   position: relative;
+}
+
+.time-error {
+  color: variables.$darker-pink;
 }

@@ -64,6 +64,7 @@ const ActionBox = (props) => {
   }
 
   const handleDownClick = eA => {
+    console.log('downclick called')
     eA.persist();
     let clickedBox = eA.target.closest('.action-box');
     if (eA.button === 0 && clickedBox && !eA.target.closest('.action-icon') && clickedBox.classList.contains('selected')) {
@@ -71,6 +72,7 @@ const ActionBox = (props) => {
       let allActions = document.querySelectorAll('.action-box');
       let planActionIds = props.plan.actions.map(action => action.id);
       let allOffsets = [];
+      clickedBox.classList.add('dragging');
       allActions.forEach(actionBox => {
         allOffsets.push(actionBox.offsetTop);
       });
@@ -99,6 +101,7 @@ const ActionBox = (props) => {
               }
             }
           }
+          clickedBox.classList.remove('dragging');
           handleSelect(eA); // cancel(/duplicate) toggle select
         }
         document.body.onmousemove = document.body.onmouseup = null;

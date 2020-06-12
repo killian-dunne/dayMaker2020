@@ -94,5 +94,121 @@ export const convertHeightToTime = (time, height) => {
     mins += 60;
     hours --;
   }
-  return ("00" + hours).slice(-2) + ":" + ("00" + mins).slice(-2);
+  return hourMinToString(hours, mins);
+}
+
+export const timeAddition = (oldTime, increment) => { // Eg increment = -30 (mins)
+  if (increment === 0) return oldTime;
+  let [hours, mins] = oldTime.split(':');
+  [hours, mins] = [parseInt(hours), parseInt(mins)];
+  let pos = increment > 0 ? true : false;
+  if (!pos) increment = -increment;
+  let numHours = Math.floor(increment / 60);
+  let numMins = increment % 60;
+  if (!pos) {
+    numHours = -numHours;
+    numMins = -numMins;
+  }
+  if (numMins + mins > 59) {
+    hours ++;
+  } else if (numMins + mins < 0) {
+    hours --;
+    mins += 60;
+  }
+  return hourMinToString(hours + numHours, mins + numMins);
+}
+
+export const hourMinToString = (h, m) => {
+  return ("00" + (parseInt(h) % 24)).slice(-2) + ":" + ("00" + (parseInt(m) % 60)).slice(-2);
+}
+
+export const roundTime = (h, m) => {
+  let [retH, retM] = [0, 0];
+  if (m.toString().length === 1) {
+    m = m * 10;
+  }
+  let longerhDiv = hourDiv.concat(60);
+  for (let i = 0; i < longerhDiv.length - 1; i++) {
+    if (m < (longerhDiv[i] + longerhDiv[i+1]) / 2) {
+      retM = longerhDiv[i];
+    } else {
+      retM = 60;
+    }
+  }
+  if (retM === 60) {
+    retM = 0;
+    retH = parseInt(h) + 1;
+  } else {
+    retH = h;
+  }
+
+  return [retH, retM];
+}
+
+export const cleanInput = text => {
+  let returnText = '';
+  let problemText = '';
+  if (text.includes(":")) {
+    let [h, m] = text.split(":");
+    if (isNaN(h) || isNaN(m)) {
+      return ['Input time only as numbers', true]
+    } else {
+      return [hourMinToString(h, m), false];
+    }
+  } else {
+    let [h, m] = [0, 0];
+    switch (text.length) {
+      // case 0:
+      //   return ['Add a time!', true];
+      case 1:
+        if (isNaN(text)) {
+          return [`A time needs a number!`, true]
+        } else {
+          return ["0" + (text) + ":00", false]
+        }
+      case 2:
+        if (!isNaN(text[0]) && !isNaN(text[1])) {
+          if (text[0] == 0) {
+            return [hourMinToString(text[1], 0), false];
+          } else if (text[1] == 0) {
+            return [hourMinToString(text[0], 0), false];
+          } else {
+            if (parseInt(text) < 24) {
+              return [hourMinToString(text, 0), false];
+            } else {
+              let [h, m] = roundTime(text[0], text[1]);
+              return [hourMinToString(h, m), false];
+            }
+          }
+        }
+      case 3:
+        [h, m] = [text[0], text.substring(1)];
+        if (!isNaN(h) && !isNaN(m)) {
+          let [roundedH, roundedM] = roundTime(h, m);
+          return [hourMinToString(roundedH, roundedM), false];
+        }
+      case 4:
+        [h, m] = [text.substring(0, 2), text.substring(2)];
+        if (isNaN(h) || isNaN(m)) {
+          let [roundedH, roundedM] = roundTime(h, m);
+          return [hourMinToString(roundedH, roundedM), false];
+        }
+      default:
+        return ['Input is not formatted correctly', true];
+    }
+  }
+}
+
+export const isLater = (timeA, timeB) => {
+  let [hA, mA] = timeA.split(":");
+  let [hB, mB] = timeB.split(":");
+  [hA, mA] = [parseInt(hA), parseInt(mA)];
+  [hB, mB] = [parseInt(hB), parseInt(mB)];
+  if (hA > hB || (hA === hB && mA > mB)) {
+    return ['Set the end time after the start time', true];
+  } else if (hA === hB && mA === mB) {
+    return [`It should take at least ${hourDiv[1]} minutes`, true];
+  } else {
+    return ['Yay', false];
+  }
 }

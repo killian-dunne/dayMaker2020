@@ -353,6 +353,19 @@ div.action-box.hovered .full-text {
   white-space: normal;
   overflow: visible;
   width: 150px;
+  overflow-wrap: break-word;
+  word-wrap: break-word;
+  -ms-word-break: break-all;
+  /* This is the dangerous one in WebKit, as it breaks things wherever */
+  word-break: break-all;
+  /* Instead use this non-standard one: */
+  word-break: break-word;
+  /* Adds a hyphen where the word breaks, if supported (No Blink) */
+  -ms-hyphens: auto;
+  -moz-hyphens: auto;
+  -webkit-hyphens: auto;
+  hyphens: auto;
+  cursor: auto;
 }
 
 div.action-box.hovered .action-icon {
@@ -620,6 +633,10 @@ td {
   background-color: #f8f9fa;
 }
 
+#action-setup-modal .time-input {
+  width: 80px;
+}
+
 #action-setup-modal input:focus {
   outline: none;
   border-bottom: solid 3px #ffc107;
@@ -637,6 +654,10 @@ td {
 
 .times {
   position: relative;
+}
+
+.time-error {
+  color: #ffb3b3;
 }
 
 /*# sourceMappingURL=index.css.map */
