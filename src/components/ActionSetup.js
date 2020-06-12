@@ -1,4 +1,4 @@
-import React, { useEffect, useRef} from 'react';
+import React, { useEffect, useState, useRef} from 'react';
 import DatePicker from 'react-datepicker';
 import { setAction } from '../utils/dbStuff';
 import { timeAddition, hourMinToString, roundTime, cleanInput, isLater } from '../utils/dateStuff';
@@ -8,6 +8,8 @@ const ActionSetup = (props) => {
   const setupContent = useRef(null);
   const firstTimeInput = useRef(null);
   const secondTimeInput = useRef(null);
+
+  let [error, setError] = useState('');
 
   useEffect(() => {
     setupContent.current.focus();
@@ -21,11 +23,29 @@ const ActionSetup = (props) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    if (props.actionID) {
-      props.updateAcion(props.text, props.startTime, props.endTime, props.planId, props.completed, props.actionID);
+    handleInput(e);
+    let [startText, startError] = cleanInput(props.startTime);
+    let [endText, endError] = cleanInput(props.endTime);
+
+    if (startError) {
+      setError('Incorrect start time format');
+    } else if (endError) {
+      setError('Incorrect end time format');
+    } else if (props.text === '') {
+      setError('Text cannot be blank');
     } else {
-      props.createAction(props.text);
+      let [laterMessage, later] = isLater(startText, endText);
+      if (later) {
+        setError(laterMessage);
+      } else {
+        if (props.actionID) {
+          props.setAction(props.text, startText, endText, props.planId, props.completed, props.actionID);
+        } else {
+          props.setAction(props.text);
+        }
+      }
     }
+
   }
 
   const getMinTime = () => {
@@ -41,13 +61,14 @@ const ActionSetup = (props) => {
   }
 
   const adjustTime = e => {
+    e.persist();
     let time = e.target.value;
     let [cleanedTime, problem] = cleanInput(time);
     if (!problem) {
       if (e.key === 'Enter') {
-        console.log(e.target.value);
-        console.log(e.target)
-        console.log(e.target.selected);
+        e.preventDefault();
+        handleInput(e)
+        handleSubmit(e);
       } else if (e.keyCode === 38) {
         let updatedTime = timeAddition(cleanedTime, 15);
         e.target.value = updatedTime;
@@ -105,7 +126,7 @@ const ActionSetup = (props) => {
                   onChange={props.changeStartTime}
                   onBlur={handleInput}
                   ref={firstTimeInput}/>
-          <div className="time-error hide first-error">
+          <div className="error-message time-error hide first-error">
             Type a number in the form hh:mm, eg. 09:30.
           </div>
           <br/>
@@ -118,11 +139,14 @@ const ActionSetup = (props) => {
                   onChange={props.changeEndTime}
                   onBlur={handleInput}
                   ref={secondTimeInput}/>
-          <div className="time-error hide second-error">
+          <div className="error-message time-error hide second-error">
             Type a number in the form hh:mm, eg. 09:30.
           </div>
-          <div className="time-error hide third-error">
+          <div className="error-message time-error hide third-error">
             Compare this time to the start time.
+          </div>
+          <div className="error-message submission-error">
+            {error}
           </div>
 
         <button type="submit" className="btn btn-outline-warning">Save</button>

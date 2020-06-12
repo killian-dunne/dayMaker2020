@@ -24,8 +24,13 @@ const ActionBox = (props) => {
     }
     let increment = 20;
     if (height < 14) {
-      textArea.classList.toggle('hide');
-      ellipArea.classList.toggle('hide');
+      if (box.closest(':hover') === box) {
+        textArea.classList.remove('hide');
+        ellipArea.classList.add('hide');
+      } else {
+        textArea.classList.add('hide');
+        ellipArea.classList.remove('hide');
+      }
       box.setAttribute('style', `height: ${box.scrollHeight + increment}px !important`);
     } else if (height < 50) {
       increment = 30;
@@ -41,19 +46,31 @@ const ActionBox = (props) => {
     box.style.top = top;
   }
 
-  const completeAction = e => {
+  const toggleCompleted = e => {
+    e.stopPropagation();
     let box = e.target.closest('.action-box');
     let textArea = box.querySelector('.inline');
-    textArea.classList.add('completed');
-    box.classList.add('faded');
+    let completing = textArea.classList.contains('completed');
+    textArea.classList.toggle('completed');
+    box.classList.toggle('faded');
     let classes = ['hvr-grow', 'hvr-rotate', 'hvr-buzz-out'];
-    box.querySelectorAll('svg').forEach(icon => {
-      classes.forEach(myClass => {
-        if (icon.classList.contains(myClass)) {
-          icon.classList.remove(myClass);
-        }
-      });
+    box.querySelectorAll('svg').forEach(icon => { // remove animations on icons
+      if (icon.classList.contains('check-icon')) icon.classList.toggle('hvr-grow');
+      if (icon.classList.contains('edit-icon')) icon.classList.toggle('hvr-rotate');
+      if (icon.classList.contains('delete-icon')) icon.classList.toggle('hvr-buzz-out');
     });
+    props.addOrUpdateAction(undefined, undefined, undefined, props.planID, completing, props.id);
+  }
+
+  const selectOrComplete = e => {
+    e.persist();
+    e.stopPropagation();
+    let box = e.target.closest('.action-box');
+    if (box.classList.contains('faded')) {
+      toggleCompleted(e);
+    } else {
+      handleSelect(e);
+    }
   }
 
   const handleSelect = e => {
@@ -110,26 +127,28 @@ const ActionBox = (props) => {
   }
 
   return (
-    <div id={props.id} className="action-box" style={{height: height +'px'}} onClick={handleSelect} onMouseDown={handleDownClick} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
-      <div className="action-icon action-check fa-icon" onClick={completeAction}>
-        <FontAwesomeIcon icon={faCheckSquare} size="1x" className="hvr-grow"/>
-      </div>
-      <div className="action-icon action-edit fa-icon" onClick={e => props.editAction(e, props.id)}>
-        <FontAwesomeIcon icon={faEdit} size="1x" className="hvr-rotate"/>
-      </div>
-      <div className="action-icon action-trash fa-icon" onClick={e => props.removeAction(e, props.id)}>
-        <FontAwesomeIcon icon={faTrash} size="1x" className="hvr-buzz-out"/>
-      </div>
-      <div className={`full-text ${hideA}`}>
-        <div className="inline">
-          {props.text}
+    <div id={props.id} className="action-box" style={{height: height +'px'}} onClick={selectOrComplete} onMouseDown={handleDownClick} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
+      <div className="gen-writing">
+        <div className="action-icon action-check fa-icon" onClick={toggleCompleted}>
+          <FontAwesomeIcon icon={faCheckSquare} size="1x" className="check-icon hvr-grow"/>
         </div>
-      </div>
-      <div className={`ellipsis ${hideB}`}>
-        ...
-      </div>
-      <div className="action-times">
-        {props.startTime}-{props.endTime}
+        <div className="action-icon action-edit fa-icon" onClick={e => props.editAction(e, props.id)}>
+          <FontAwesomeIcon icon={faEdit} size="1x" className="edit-icon hvr-rotate"/>
+        </div>
+        <div className="action-icon action-trash fa-icon" onClick={e => props.removeAction(e, props.id)}>
+          <FontAwesomeIcon icon={faTrash} size="1x" className="delete-icon hvr-buzz-out"/>
+        </div>
+        <div className={`full-text ${hideA}`}>
+          <div className="inline">
+            {props.text}
+          </div>
+        </div>
+        <div className={`ellipsis ${hideB}`}>
+          ...
+        </div>
+        <div className="action-times">
+          {props.startTime}-{props.endTime}
+        </div>
       </div>
     </div>
   )

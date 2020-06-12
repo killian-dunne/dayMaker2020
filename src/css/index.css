@@ -163,6 +163,15 @@
   animation-fill-mode: forwards;
 }
 
+.action-box.hovered .completed::after {
+  opacity: 0;
+}
+
+.action-box.hovered .completed {
+  text-decoration: line-through;
+  text-decoration-color: red;
+}
+
 html, #root, body, .App {
   height: 100%;
   overflow: auto;
@@ -341,7 +350,7 @@ div.action-box {
 }
 
 div.action-box.selected {
-  background: repeating-linear-gradient(-45deg, #fff5b0 0px, #555599 1px, #555599 11px, #fff5b0 12px);
+  background: linear-gradient(to top left, black, #555599);
 }
 
 div.action-box.hovered {
@@ -366,6 +375,10 @@ div.action-box.hovered .full-text {
   -webkit-hyphens: auto;
   hyphens: auto;
   cursor: auto;
+}
+
+div.action-box.hovered.faded .full-text, div.action-box.faded {
+  cursor: pointer;
 }
 
 div.action-box.hovered .action-icon {
@@ -397,12 +410,12 @@ div.action-box.hovered .action-icon {
 }
 
 div.action-box.faded {
-  cursor: auto;
-  opacity: 0.5;
+  background-color: #757586;
   transition-delay: 1s;
 }
-div.action-box.faded .action-icon, div.action-box.faded svg, div.action-box.faded path {
-  cursor: default;
+
+div.action-box.faded .gen-writing {
+  opacity: 0.5;
 }
 
 .action-box .action-times {
@@ -656,7 +669,7 @@ td {
   position: relative;
 }
 
-.time-error {
+.error-message {
   color: #ffb3b3;
 }
 

@@ -19,3 +19,12 @@
   animation-iteration-count: 1;
   animation-fill-mode: forwards;
 }
+
+.action-box.hovered .completed::after {
+  opacity: 0;
+}
+
+.action-box.hovered .completed {
+  text-decoration: line-through;
+  text-decoration-color: red;
+}

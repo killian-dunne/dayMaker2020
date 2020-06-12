@@ -17,7 +17,15 @@ div.action-box {
 }
 
 div.action-box.selected {
-  background: repeating-linear-gradient(-45deg, #fff5b0 0px, #555599 1px, #555599 11px, #fff5b0 12px);
+//   background: repeating-linear-gradient(
+//   -45deg,
+//   variables.$back-yellow,
+//   variables.$back-yellow .3px,
+//   variables.$soft-blue .3px,
+//   variables.$soft-blue 10px
+// );
+background: linear-gradient(to top left, black, variables.$soft-blue)
+//  background: repeating-linear-gradient(-45deg, #fff5b0 0px, #555599 1px, #555599 11px, #fff5b0 12px);
 }
 
 div.action-box.hovered {
@@ -44,6 +52,10 @@ div.action-box.hovered .full-text {
   -webkit-hyphens: auto;
   hyphens: auto;
   cursor: auto;
+}
+
+div.action-box.hovered.faded .full-text, div.action-box.faded {
+  cursor: pointer
 }
 
 div.action-box.hovered .action-icon {
@@ -75,12 +87,12 @@ div.action-box.hovered .action-icon {
 }
 
 div.action-box.faded {
-  cursor: auto;
-  opacity: 0.5;
+  background-color: variables.$dull-purple;
   transition-delay: 1s;
-  .action-icon, svg, path {
-    cursor: default;
-  }
+}
+
+div.action-box.faded .gen-writing {
+  opacity: 0.5; 
 }
 
 .action-box .action-times {

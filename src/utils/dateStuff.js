@@ -148,6 +148,9 @@ export const roundTime = (h, m) => {
 export const cleanInput = text => {
   let returnText = '';
   let problemText = '';
+  if (!text) {
+    return ['Time missing', true];
+  }
   if (text.includes(":")) {
     let [h, m] = text.split(":");
     if (isNaN(h) || isNaN(m)) {

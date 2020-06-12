@@ -114,7 +114,8 @@ class DayPlan extends React.Component {
   openAction = (e, id)=> {
     console.log('action opened')
     let box = e.target;
-    if (!box.closest('.action-box') || (box.closest('.action-icon') && box.closest('.action-icon').classList.contains('action-edit'))) {
+    let icon = box.closest('.action-icon');
+    if (!box.closest('.action-box') || (icon && icon.classList.contains('action-edit') && !box.classList.contains('faded'))) {
       let startTime, endTime, text;
       if (id) {
         let actions = this.props.actions;
@@ -234,8 +235,10 @@ class DayPlan extends React.Component {
     });
   }
 
-  changeStartTime = e => {
-    let time = e.target.value;
+  changeStartTime = (e, time) => {
+    if (!time) {
+      time = e.target.value;
+    }
     let cleanedInput = cleanInput(time);
     if (!cleanedInput[1]) {
       this.setState({tempStartTime: cleanedInput[0]})
@@ -245,8 +248,11 @@ class DayPlan extends React.Component {
     });
   }
 
-  changeEndTime = e => {
-    let time = e.target.value;
+  changeEndTime = (e, time) => {
+    debugger;
+    if (!time) {
+      time = e.target.value;
+    }
     let cleanedInput = cleanInput(time);
     if (!cleanedInput[1]) {
       this.setState({tempEndTime: cleanedInput[0]})
@@ -310,6 +316,7 @@ class DayPlan extends React.Component {
                               startTime={a[0][1].times.startTime}
                               endTime={a[0][1].times.endTime}
                               triggerSelect={this.selectAction}
+                              completed={a[0][1].completed}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -330,6 +337,7 @@ class DayPlan extends React.Component {
                               startTime={a[1][1].times.startTime}
                               endTime={a[1][1].times.endTime}
                               triggerSelect={this.selectAction}
+                              completed={a[1][1].completed}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -348,6 +356,7 @@ class DayPlan extends React.Component {
                               startTime={a[2][1].times.startTime}
                               endTime={a[2][1].times.endTime}
                               triggerSelect={this.selectAction}
+                              completed={a[2][1].completed}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -366,6 +375,7 @@ class DayPlan extends React.Component {
                               startTime={a[3][1].times.startTime}
                               endTime={a[3][1].times.endTime}
                               triggerSelect={this.selectAction}
+                              completed={a[3][1].completed}
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
@@ -392,14 +402,13 @@ class DayPlan extends React.Component {
           <ActionSetup  startTime={this.state.addActionStart}
                         endTime={this.state.addActionEnd}
                         planId={this.props.id}
-                        createAction={this.addOrUpdateAction}
                         changeStartTime={this.changeStartTime}
                         changeEndTime={this.changeEndTime}
                         closeAction={this.closeAction}
                         text={this.state.addActionText}
                         changeText={this.changeActionText}
                         actionID={this.state.addActionID}
-                        updateAction={this.addOrUpdateAction}
+                        setAction={this.addOrUpdateAction}
                         date={this.props.date}
                         openAddAction={this.state.openAddAction}
                         />
