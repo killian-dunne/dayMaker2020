@@ -57,6 +57,7 @@ const ActionBox = (props) => {
   }
 
   const handleSelect = e => {
+    e.stopPropagation();
     let box = e.target.closest('.action-box');
     if (box && !e.target.closest('.action-icon')) {
       box.classList.toggle('selected');
@@ -64,7 +65,6 @@ const ActionBox = (props) => {
   }
 
   const handleDownClick = eA => {
-    console.log('downclick called')
     eA.persist();
     let clickedBox = eA.target.closest('.action-box');
     if (eA.button === 0 && clickedBox && !eA.target.closest('.action-icon') && clickedBox.classList.contains('selected')) {

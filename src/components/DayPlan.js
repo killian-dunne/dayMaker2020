@@ -112,12 +112,13 @@ class DayPlan extends React.Component {
   }
 
   openAction = (e, id)=> {
+    console.log('action opened')
     let box = e.target;
     if (!box.closest('.action-box') || (box.closest('.action-icon') && box.closest('.action-icon').classList.contains('action-edit'))) {
       let startTime, endTime, text;
       if (id) {
-        this.removeAction(null, id)
         let actions = this.props.actions;
+        this.removeAction(null, id)
         let myAction;
         actions.forEach(action => {
           if (action.id === id) {

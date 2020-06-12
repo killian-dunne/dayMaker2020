@@ -6,6 +6,8 @@ import { timeAddition, hourMinToString, roundTime, cleanInput, isLater } from '.
 const ActionSetup = (props) => {
 
   const setupContent = useRef(null);
+  const firstTimeInput = useRef(null);
+  const secondTimeInput = useRef(null);
 
   useEffect(() => {
     setupContent.current.focus();
@@ -47,7 +49,6 @@ const ActionSetup = (props) => {
         console.log(e.target)
         console.log(e.target.selected);
       } else if (e.keyCode === 38) {
-        console.log('set target')
         let updatedTime = timeAddition(cleanedTime, 15);
         e.target.value = updatedTime;
         e.target.focus();
@@ -62,19 +63,27 @@ const ActionSetup = (props) => {
 
   const handleInput = e => {
     let [text, problem] = cleanInput(e.target.value);
-    if (problem) {
+    if (problem) { // Input is well formatted
       e.target.nextSibling.classList.toggle('hide');
       e.target.nextSibling.textContent = text;
     } else {
-      let [output, error] = isLater(props.startTime, text);
+      let [output, error] = isLater(firstTimeInput.current.value, text);
       let secondErrDiv = e.target.nextSibling.nextSibling;
-      if (e.target.classList.contains('end-time') && error) {
+      let firstInput = e.target === firstTimeInput.current;
+      if (!firstInput && error) { // Second input is not after first
         secondErrDiv.classList.remove('hide');
         secondErrDiv.textContent = output;
-      } else if (!secondErrDiv.classList.contains('hide')) {
-        secondErrDiv.classList.add('hide');
+      } else {
+        if (!secondErrDiv.classList.contains('hide') && secondErrDiv.classList.contains('time-error')) {
+          secondErrDiv.classList.add('hide');
+        }
+        e.target.value = text;
+        if (firstInput) {
+          props.changeStartTime(e);
+        } else {
+          props.changeEndTime(e);
+        }
       }
-      e.target.value = text;
       if (!e.target.nextSibling.classList.contains('hide')) {
         e.target.nextSibling.classList.add('hide');
       }
@@ -87,12 +96,28 @@ const ActionSetup = (props) => {
         <span className="times" onClick={props.closeAction}>&times;</span>
         <form onSubmit={handleSubmit}>
           <input type="text" placeholder="Task" value={props.text} name="text" onChange={props.changeText} ref={setupContent}/>
-          <input className="time-input start-time" type="text" placeholder="Start Time" value={props.startTime} name="start-time" onKeyDown={adjustTime} onChange={props.changeStartTime} onBlur={handleInput}/>
+          <input  className="time-input start-time"
+                  type="text"
+                  placeholder="Start Time"
+                  value={props.startTime}
+                  name="start-time"
+                  onKeyDown={adjustTime}
+                  onChange={props.changeStartTime}
+                  onBlur={handleInput}
+                  ref={firstTimeInput}/>
           <div className="time-error hide first-error">
             Type a number in the form hh:mm, eg. 09:30.
           </div>
           <br/>
-          <input className="time-input end-time" type="text" placeholder="End Time" value={props.endTime} name="end-time" onKeyDown={adjustTime} onChange={props.changeEndTime} onBlur={handleInput}/>
+          <input  className="time-input end-time"
+                  type="text"
+                  placeholder="End Time"
+                  value={props.endTime}
+                  name="end-time"
+                  onKeyDown={adjustTime}
+                  onChange={props.changeEndTime}
+                  onBlur={handleInput}
+                  ref={secondTimeInput}/>
           <div className="time-error hide second-error">
             Type a number in the form hh:mm, eg. 09:30.
           </div>
@@ -108,29 +133,3 @@ const ActionSetup = (props) => {
 }
 
 export default ActionSetup
-// <DatePicker
-//   value={props.startTime}
-//   selected={selectedStart}
-//   showTimeSelect
-//   showTimeSelectOnly
-//   timeIntervals={15}
-//   timeCaption="Start"
-//   dateFormat="hh:mm"
-//   onChange={props.changeStartTime}
-//   className="start-time"
-//   onKeyDown={adjustTime}
-// /><br/>
-// <DatePicker
-//   value={props.endTime}
-//   selected={getSelected(props.endTime)}
-//   showTimeSelect
-//   showTimeSelectOnly
-//   timeIntervals={15}
-//   timeCaption="End"
-//   dateFormat="hh:mm"
-//   minTime={getMinTime()}
-//   maxTime={getMaxTime()}
-//   onChange={props.changeEndTime}
-//   className="end-time"
-//   onKeyDown={adjustTime}
-// /><br/>
