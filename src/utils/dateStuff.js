@@ -123,14 +123,16 @@ export const hourMinToString = (h, m) => {
 }
 
 export const roundTime = (h, m) => {
+  [h, m] = [parseInt(h), parseInt(m)];
   let [retH, retM] = [0, 0];
   if (m.toString().length === 1) {
     m = m * 10;
   }
   let longerhDiv = hourDiv.concat(60);
   for (let i = 0; i < longerhDiv.length - 1; i++) {
-    if (m < (longerhDiv[i] + longerhDiv[i+1]) / 2) {
+    if (m < (parseInt(longerhDiv[i]) + parseInt(longerhDiv[i+1])) / 2) {
       retM = longerhDiv[i];
+      break;
     } else {
       retM = 60;
     }
@@ -141,60 +143,78 @@ export const roundTime = (h, m) => {
   } else {
     retH = h;
   }
-
+  [retH, retM] = [parseInt(retH), parseInt(retM)];
   return [retH, retM];
 }
 
-export const cleanInput = text => {
-  let returnText = '';
-  let problemText = '';
-  if (!text) {
+export const cleanInput = (text, increment = false) => { // return [text, problem]
+  if (isNaN(parseInt(text))) {
     return ['Time missing', true];
+  }
+  if (!increment) {
+    [text, increment] = handleAMPM(text);
   }
   if (text.includes(":")) {
     let [h, m] = text.split(":");
     if (isNaN(h) || isNaN(m)) {
       return ['Input time only as numbers', true]
     } else {
+      if (increment) {
+        h = parseInt(h) + 12;
+      }
       return [hourMinToString(h, m), false];
     }
   } else {
     let [h, m] = [0, 0];
     switch (text.length) {
-      // case 0:
-      //   return ['Add a time!', true];
       case 1:
         if (isNaN(text)) {
           return [`A time needs a number!`, true]
         } else {
-          return ["0" + (text) + ":00", false]
+          if (increment) {
+            text = parseInt(text) + 12;
+          }
+          return [hourMinToString(text, 0), false]
         }
       case 2:
-        if (!isNaN(text[0]) && !isNaN(text[1])) {
-          if (text[0] == 0) {
-            return [hourMinToString(text[1], 0), false];
-          } else if (text[1] == 0) {
-            return [hourMinToString(text[0], 0), false];
-          } else {
-            if (parseInt(text) < 24) {
-              return [hourMinToString(text, 0), false];
-            } else {
-              let [h, m] = roundTime(text[0], text[1]);
-              return [hourMinToString(h, m), false];
-            }
+        if (!isNaN(text)) {
+          if (increment) {
+            text = parseInt(text) + 12;
           }
+          return [hourMinToString(text, 0), false];
         }
       case 3:
+        if (handleAMPM(text)[0] !== text) {
+          if (increment) {
+            return cleanInput(text.substring(text.length), increment)
+          }
+        }
         [h, m] = [text[0], text.substring(1)];
+        if (increment) {
+          h = parseInt(h) + 12;
+        }
         if (!isNaN(h) && !isNaN(m)) {
           let [roundedH, roundedM] = roundTime(h, m);
           return [hourMinToString(roundedH, roundedM), false];
         }
       case 4:
         [h, m] = [text.substring(0, 2), text.substring(2)];
-        if (isNaN(h) || isNaN(m)) {
+        if (!isNaN(h) && !isNaN(m)) {
+          if (increment || (h == 12 && increment === null)) {
+            h = parseInt(h) + 12;
+          }
           let [roundedH, roundedM] = roundTime(h, m);
           return [hourMinToString(roundedH, roundedM), false];
+        }
+      case 5:
+      case 6:
+        if (handleAMPM(text)[0] !== text) {
+          if (increment) {
+            if (text[0] === 1 && text[1] === 2) {
+              increment = !increment;
+            }
+            return cleanInput(text.substring(0, text.length - 2), increment);
+          }
         }
       default:
         return ['Input is not formatted correctly', true];
@@ -202,7 +222,18 @@ export const cleanInput = text => {
   }
 }
 
-export const isLater = (timeA, timeB) => {
+export const handleAMPM = (text) => {
+  let lastPart = text.substring(text.length - 2);
+  if (lastPart === 'am' || lastPart === 'AM') {
+    return [text.substring(0, text.length - 2), null];
+  } else if (lastPart === 'pm' || lastPart === 'PM') {
+    return [text.substring(0, text.length - 2), true];
+  } else {
+    return [text, false];
+  }
+}
+
+export const isLater = (timeA, timeB) => { // true if timeA after timeB
   let [hA, mA] = timeA.split(":");
   let [hB, mB] = timeB.split(":");
   [hA, mA] = [parseInt(hA), parseInt(mA)];

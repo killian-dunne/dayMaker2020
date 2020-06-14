@@ -23,10 +23,11 @@ const ActionSetup = (props) => {
 
   const handleSubmit = e => {
     e.preventDefault();
-    handleInput(e);
+    if (e.target.nodeName === 'input') {
+      handleInput(e)
+    }
     let [startText, startError] = cleanInput(props.startTime);
     let [endText, endError] = cleanInput(props.endTime);
-
     if (startError) {
       setError('Incorrect start time format');
     } else if (endError) {
@@ -60,14 +61,16 @@ const ActionSetup = (props) => {
     return new Date(tomorrow.setHours(6, 0, 0));
   }
 
-  const adjustTime = e => {
+  const handleKeyPress = e => {
     e.persist();
     let time = e.target.value;
     let [cleanedTime, problem] = cleanInput(time);
     if (!problem) {
       if (e.key === 'Enter') {
         e.preventDefault();
-        handleInput(e)
+        if (e.target.nodeName === 'input') {
+          handleInput(e)
+        }
         handleSubmit(e);
       } else if (e.keyCode === 38) {
         let updatedTime = timeAddition(cleanedTime, 15);
@@ -83,8 +86,12 @@ const ActionSetup = (props) => {
   }
 
   const handleInput = e => {
+    let messages = e.target.closest('form').querySelectorAll('.error-message');
+    messages.forEach(msg => {
+      msg.classList.add('hide');
+    })
     let [text, problem] = cleanInput(e.target.value);
-    if (problem) { // Input is well formatted
+    if (problem) { // Input is not well formatted
       e.target.nextSibling.classList.toggle('hide');
       e.target.nextSibling.textContent = text;
     } else {
@@ -122,7 +129,7 @@ const ActionSetup = (props) => {
                   placeholder="Start Time"
                   value={props.startTime}
                   name="start-time"
-                  onKeyDown={adjustTime}
+                  onKeyDown={handleKeyPress}
                   onChange={props.changeStartTime}
                   onBlur={handleInput}
                   ref={firstTimeInput}/>
@@ -135,7 +142,7 @@ const ActionSetup = (props) => {
                   placeholder="End Time"
                   value={props.endTime}
                   name="end-time"
-                  onKeyDown={adjustTime}
+                  onKeyDown={handleKeyPress}
                   onChange={props.changeEndTime}
                   onBlur={handleInput}
                   ref={secondTimeInput}/>

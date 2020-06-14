@@ -249,7 +249,6 @@ class DayPlan extends React.Component {
   }
 
   changeEndTime = (e, time) => {
-    debugger;
     if (!time) {
       time = e.target.value;
     }
