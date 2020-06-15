@@ -1,4 +1,4 @@
-import { compareDates, compareTimes } from '../utils/dateStuff';
+import { compareDates, compareTimes, secondsToDate } from '../utils/dateStuff';
 
 const firebase = require('firebase');
 
@@ -67,5 +67,40 @@ export const deletePlan = async id => {
   } catch (err) {
     console.log('Error when trying to delete plan with id', id);
     console.log(err.message);
+  }
+}
+
+export const getPlanByDate = async date => {
+  const oneDay = 86400; // seconds
+  const db = window._DEFAULT_DATA[1];
+  try {
+    let firstPlan, secondPlan;
+    let firstSnapshot = await db.collection('plans').orderBy('date').startAt(date).limit(1).get();
+    let secondSnapshot = await db.collection('plans').orderBy('date', 'desc').startAt(date).limit(1).get();
+    await firstSnapshot.forEach(plan => {
+      firstPlan = {id: plan.id, data: plan.data()};
+    });
+    await secondSnapshot.forEach(plan => {
+      secondPlan = {id: plan.id, data: plan.data()};
+    })
+    let earlierDate = secondsToDate(secondPlan.data.date.seconds);
+    let laterDate = secondsToDate(firstPlan.data.date.seconds);
+    if (compareDates(earlierDate, date) === 0) {
+      return secondPlan.id;
+    } else if (compareDates(laterDate, date) === 0) {
+      return firstPlan.id;
+    } else {
+      let earlierSecDiff = Math.abs(secondPlan.data.date.seconds - date.getTime() / 1000)
+      let laterSecDiff = Math.abs(firstPlan.data.date.seconds - date.getTime() / 1000);
+      if (earlierSecDiff < laterSecDiff) {
+        return secondPlan.id;
+      } else {
+        return firstPlan.id
+      }
+      return
+    }
+  } catch (err) {
+    console.log(`couldn't retrieve plans.`);
+    console.log(err.message)
   }
 }

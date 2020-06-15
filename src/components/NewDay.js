@@ -93,7 +93,7 @@ class NewDay extends React.Component {
         </div>
         <form onSubmit={this.handleSubmit}>
           <div className="form-center">
-            <DatePicker inline selected={this.state.planDate} onSelect={this.handleSelect} className="red-border"/>
+            <DatePicker inline selected={this.state.planDate} onSelect={this.handleSelect}/>
             <input className="new-title form-control" type="text" value={this.state.planTitle} placeholder="Plan title" onChange={this.handleInput}/>
             <div className="tooltip-container">
               <button className="btn btn-outline-warning" disabled={buttonEnable} type="submit">Create</button>

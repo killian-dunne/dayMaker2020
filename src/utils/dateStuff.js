@@ -28,6 +28,10 @@ export const displayStopwatch = (sec) => {
   return output;
 }
 
+export const planDateFormat = d => {
+  return dateFormat(d, "d-mmm-yy");
+}
+
 export const displayDate = (d) => {
   return dateFormat(d, "ddd, dS mmm yyyy, h:MM TT");
 }
@@ -245,4 +249,11 @@ export const isLater = (timeA, timeB) => { // true if timeA after timeB
   } else {
     return ['Yay', false];
   }
+}
+
+
+export const secondsToDate = (secs) => {
+    var t = new Date(1970, 0, 1);
+    t.setSeconds(secs);
+    return t;
 }

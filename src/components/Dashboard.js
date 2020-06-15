@@ -136,6 +136,7 @@ class Dashboard extends React.Component {
       }
       let d = new Date(1970, 0, 1, 1);
       d.setSeconds(data.date.seconds);
+      let scrollToThis = id === this.props.searchedPlan;
       return <DayPlan key={idx}
                       plan={data}
                       keyProp={idx}
@@ -150,6 +151,7 @@ class Dashboard extends React.Component {
                       getPlans={this.getPlans}
                       updatePlan={this.updatePlan}
                       removePlan={this.removePlan}
+                      scrollToThis={scrollToThis}
                       />
     });
   }

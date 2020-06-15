@@ -1,7 +1,11 @@
-import React from 'react'
+import React, { useState } from 'react'
 import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
+import { getPlanByDate } from '../utils/dbStuff';
+import DatePicker from 'react-datepicker';
+import "react-datepicker/dist/react-datepicker.css";
 
 const Navbar = (props) => {
+  let [search, setSearch] = useState('');
   let userPresent = props.user ? 'shown' : 'notShown';
   let userNotPresent = props.user ? 'notShown' : 'shown';
   let initials = '';
@@ -28,6 +32,16 @@ const Navbar = (props) => {
     auth.signOut();
   }
 
+  const handleChange = e => {
+    setSearch(e.target.value);
+  }
+
+  const handleSearch = async e => {
+    e.preventDefault();
+    let planID = await getPlanByDate(search);
+    props.scrollToPlan(planID);
+  }
+
   return(
     <nav className="navbar navbar-expand-lg navbar-light bg-light" id="nav-bootstrap-overrides">
       <div className="row center navDiv">
@@ -42,8 +56,8 @@ const Navbar = (props) => {
         <h5 className={`user-state ${userNotPresent}`} onClick={toggleSignin}>Sign In</h5>
         <button className={`btn btn-warning userIcon ${userPresent}`}>{initials}</button>
         <h5 className={`user-state ${userPresent}`} onClick={signOut}>Sign Out</h5>
-        <form className="form-inline">
-          <input type="search" className="form-control mr-sm-2" placeholder="Search" />
+        <form className="form-inline" onSubmit={handleSearch}>
+          <DatePicker selected={search} onSelect={date => setSearch(date)} className="form-control mr-sm-2" placeholderText="Search Date" dateFormat="d-MMM-yy"/>
           <button className="btn btn-outline-warning my-2 my-sm-0" disabled={buttonEnable} type="submit">Search</button>
         </form>
       </div>

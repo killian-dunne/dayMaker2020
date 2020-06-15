@@ -12,16 +12,6 @@
   min-height: 580px;
 }
 
-.react-datepicker__day--selected.react-datepicker__day {
-  background-color: variables.$strong-yellow;
-  outline-color: variables.$gentle-pink;
-  &:hover {background-color: variables.$strong-yellow;}
-}
-
-.react-datepicker__day:active {
-  outline-color: variables.$gentle-pink;
-}
-
 #create-new .new-title {
   margin: 30px;
   width: auto;
@@ -29,5 +19,4 @@
 
 #create-new .btn {
   background-color: #fff5b0;
-
 }

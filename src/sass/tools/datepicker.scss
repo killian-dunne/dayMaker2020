@@ -1,0 +1,21 @@
+@use 'variables';
+
+.react-datepicker__day--selected.react-datepicker__day {
+  background-color: variables.$strong-yellow;
+  outline-color: variables.$gentle-pink;
+  &:hover {background-color: variables.$strong-yellow;}
+}
+
+.react-datepicker__day:active {
+  outline-color: variables.$gentle-pink;
+}
+
+form .react-datepicker__day--keyboard-selected:hover,
+form .react-datepicker__day--keyboard-selected  {
+  background-color: variables.$strong-yellow;
+}
+
+form .react-datepicker-wrapper input:focus {
+  box-shadow: 0px 0px 15px variables.$darker-pink;
+  border-color: variables.$darker-pink;
+}

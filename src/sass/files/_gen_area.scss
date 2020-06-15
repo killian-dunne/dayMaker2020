@@ -50,6 +50,17 @@
   border-radius: 10px 10px 0px 0px;
 }
 
+.title-box .date {
+  position: absolute;
+  bottom: 10px;
+  right: 30px;
+  display: none;
+}
+
+.title-box:hover .date {
+  display: block;
+}
+
 .day-title {
   padding-top: 8px;
   background: border-box;

@@ -10,6 +10,7 @@ class App extends React.Component {
     super(props);
     this.state = {
       user: undefined,
+      searchedPlan: ''
     }
   }
 
@@ -30,11 +31,15 @@ class App extends React.Component {
     })
   }
 
+  scrollToPlan = searchedPlan => {
+    this.setState({searchedPlan});
+  }
+
   render() {
     return (
       <div className="App">
-        <Navbar user={this.state.user}/>
-        <Dashboard user={this.state.user}/>
+        <Navbar user={this.state.user} searchedPlan={this.state.searchedPlan} scrollToPlan={this.scrollToPlan}/>
+        <Dashboard user={this.state.user} searchedPlan={this.state.searchedPlan}/>
         <div className="display-signup">
           <SignUp callLogin={this.toggleLoggedIn}/>
         </div>
