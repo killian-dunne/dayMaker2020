@@ -22,6 +22,7 @@ class DayPlan extends React.Component {
       tempStartTime: "",
       tempEndTime: "",
       openAddAction: false,
+      highlightDate: ""
     }
     this.planDiv = React.createRef();
   }
@@ -47,8 +48,13 @@ class DayPlan extends React.Component {
     if (prevProps.position !== this.props.position) {
       this.setPlanPosition();
     }
-    if (prevProps.scrollToThis !== this.props.scrollToThis) {
+    if (prevProps.scrollToThis !== this.props.scrollToThis && this.props.scrollToThis) {
       document.querySelector('.gen-area').scrollTop = parseInt(this.props.position.substring(1));
+      console.log(this.props.title)
+      this.setState({highlightDate: 'highlight-date'});
+      setTimeout(()=> {
+        this.setState({highlightDate: ""})
+      }, 3000)
     }
   }
 
@@ -395,7 +401,7 @@ class DayPlan extends React.Component {
         <div className="title-box">
           <input value={this.props.title} className="h3 day-title" onChange={e => {this.props.renamePlan(e, this.props.id)}} onBlur={e => {this.props.updatePlan(e, this.props.id)}}/>
           <FontAwesomeIcon icon={faTrash} size="1x" className="fa-icon plan-trash hvr-buzz-out" onClick={this.handleDelete}/>
-          <div className="date">{formattedDate}</div>
+          <div className={`date ${this.state.highlightDate}`}>{formattedDate}</div>
         </div>
         <div className="scroller">
           <div className="now-time hide"></div><FontAwesomeIcon icon={faTint} color="blue" className="drop hide"/>

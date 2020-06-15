@@ -71,7 +71,6 @@ export const deletePlan = async id => {
 }
 
 export const getPlanByDate = async date => {
-  const oneDay = 86400; // seconds
   const db = window._DEFAULT_DATA[1];
   try {
     let firstPlan, secondPlan;
@@ -83,6 +82,11 @@ export const getPlanByDate = async date => {
     await secondSnapshot.forEach(plan => {
       secondPlan = {id: plan.id, data: plan.data()};
     })
+    if (firstPlan === undefined) {
+      return secondPlan.id;
+    } else if (secondPlan === undefined) {
+      return firstPlan.id;
+    }
     let earlierDate = secondsToDate(secondPlan.data.date.seconds);
     let laterDate = secondsToDate(firstPlan.data.date.seconds);
     if (compareDates(earlierDate, date) === 0) {
@@ -97,7 +101,6 @@ export const getPlanByDate = async date => {
       } else {
         return firstPlan.id
       }
-      return
     }
   } catch (err) {
     console.log(`couldn't retrieve plans.`);

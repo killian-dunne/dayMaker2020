@@ -49,10 +49,10 @@
 }
 
 .tell-login a.user-state {
-    color: variables.$soft-blue;
+    color: variables.$main-purple;
   &:hover {
     text-decoration: underline;
-    color: variables.$soft-blue;
+    color: variables.$main-purple;
     cursor: pointer;
   }
 }

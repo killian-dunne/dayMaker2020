@@ -1,7 +1,7 @@
 @use '../tools/variables';
 
 div.action-box {
-  background-color: variables.$soft-blue;
+  background-color: variables.$main-purple;
   color: variables.$gentle-pink;
   position: absolute;
   z-index: 1;
@@ -21,10 +21,10 @@ div.action-box.selected {
 //   -45deg,
 //   variables.$back-yellow,
 //   variables.$back-yellow .3px,
-//   variables.$soft-blue .3px,
-//   variables.$soft-blue 10px
+//   variables.$main-purple .3px,
+//   variables.$main-purple 10px
 // );
-background: linear-gradient(to top left, black, variables.$soft-blue)
+background: linear-gradient(to top left, black, variables.$main-purple)
 //  background: repeating-linear-gradient(-45deg, #fff5b0 0px, #555599 1px, #555599 11px, #fff5b0 12px);
 }
 

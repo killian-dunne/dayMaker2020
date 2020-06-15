@@ -55,6 +55,18 @@
   bottom: 10px;
   right: 30px;
   display: none;
+  opacity: 1;
+}
+
+.title-box .highlight-date {
+  color: variables.$main-purple;
+  display: block;
+  animation: fade 4s linear;
+}
+
+@keyframes fade {
+  0% { opacity: 1 }
+  100% { opacity: 0 }
 }
 
 .title-box:hover .date {

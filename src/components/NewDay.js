@@ -3,7 +3,6 @@ import { displayStopwatch, displayDate, titleDate } from '../utils/dateStuff';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
 import { addPlan } from '../utils/dbStuff';
-import Dashboard from './Dashboard';
 
 class NewDay extends React.Component {
   constructor(props) {
@@ -79,10 +78,11 @@ class NewDay extends React.Component {
   }
 
   render () {
+    let buttonEnable;
     if (this.props.user) {
-      var buttonEnable = false;
+      buttonEnable = false;
     } else {
-      var buttonEnable = true;
+      buttonEnable = true;
     }
     const dateString = displayDate(this.state.currentDate);
     return(

@@ -33,6 +33,9 @@ class App extends React.Component {
 
   scrollToPlan = searchedPlan => {
     this.setState({searchedPlan});
+    setTimeout(() => {
+      this.setState({searchedPlan: ''})
+    }, 4000)
   }
 
   render() {
