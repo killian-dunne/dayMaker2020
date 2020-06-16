@@ -37,6 +37,44 @@
 #modal-signup button,
 #modal-signin button {
   float: right;
+  background-color: variables.$back-yellow;
+}
+
+#modal-signin img:active,
+#modal-signup img:active {
+  content: url('../googleLogin/web/2x/btn_google_signin_dark_pressed_web@2x.png');
+}
+
+#modal-signin img:hover,
+#modal-signup img:hover {
+  cursor: pointer;
+}
+
+#modal-signin img,
+#modal-signup img {
+  width: 200px;
+}
+
+#modal-signin .or-container,
+#modal-signup .or-container {
+  display: flex;
+  align-items: center;
+  text-align: center;
+}
+
+#modal-signin .h-line,
+#modal-signup .h-line {
+  flex: 2;
+}
+
+#modal-signin .h-space,
+#modal-signup .h-line {
+  flex: 3;
+}
+
+#modal-signin .or,
+#modal-signup .or {
+  flex: 3;
 }
 
 

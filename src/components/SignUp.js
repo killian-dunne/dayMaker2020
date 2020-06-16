@@ -1,5 +1,5 @@
 import React from 'react'
-import { toggleSignup } from '../utils/toggleSetup';
+import { toggleSignup, googleLogin } from '../utils/toggleSetup';
 
 const SignUp = (props) => {
 
@@ -48,6 +48,7 @@ const SignUp = (props) => {
           <div className="input-field">
             <input type="password" id="signup-password" placeholder="Password"/>
           </div>
+          <img src={require('../googleLogin/web/2x/btn_google_signin_dark_normal_web@2x.png')} alt="Google Login" onClick={googleLogin}/>
           <button className="btn btn-outline-warning my-2 my-sm-0">Sign up</button>
         </form>
       </div>

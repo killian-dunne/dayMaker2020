@@ -45,7 +45,14 @@ class Dashboard extends React.Component {
   getPlans = async () => {
     const db = window._DEFAULT_DATA[1];
     let myPlans = [];
-    const querySnapshot = await db.collection('plans').get();
+    let userRef = await db.collection('users').doc(this.props.user.uid);
+    let querySnapshot;
+    let user = await userRef.get();
+    if (user.data().authLevel === 'full') {
+      querySnapshot = await db.collection('plans').get();
+    } else {
+      querySnapshot = await db.collection('plans').where('user', '==', userRef).get();
+    }
     querySnapshot.forEach(plan => {
       getActions(plan.id).then(actions => {
         myPlans.push({id: plan.id, data: {...plan.data(), actions}});
