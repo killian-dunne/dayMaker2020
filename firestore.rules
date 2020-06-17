@@ -1,0 +1,17 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    match /users/{userId} {
+    	allow create: if request.auth.uid != null;
+      allow read: if request.auth.uid == userId;
+    }
+    
+    
+    // match /plans/{planId} {
+    // 	allow read, write: if request.auth.uid == 
+    // }
+    match /{document=**} {
+      allow read, write: if request.time < timestamp.date(2020, 8, 15);
+    }
+  }
+}

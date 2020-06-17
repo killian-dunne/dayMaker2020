@@ -349,7 +349,7 @@ input.new-title:focus {
 }
 
 #modal-signin .h-space,
-#modal-signup .h-line {
+#modal-signup .h-space {
   flex: 3;
 }
 
