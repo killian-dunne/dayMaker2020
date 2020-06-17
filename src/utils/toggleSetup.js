@@ -1,3 +1,4 @@
+import { addUserToCollection } from './dbStuff';
 const firebase = require('firebase');
 
 export const toggleSignup = (e) => {
@@ -17,22 +18,31 @@ export const toggleSignin = (e) => {
 
 }
 
-export const googleLogin = e => {
+export const googleLogin = async e => {
   e.persist();
   var provider = new firebase.auth.GoogleAuthProvider();
-  firebase.auth().signInWithPopup(provider).then(function(result) {
-    var token = result.credential.accessToken;// This gives you a Google Access Token. You can use it to access the Google API.
-    var user = result.user; // The signed-in user info.
+  let db = window._DEFAULT_DATA[1];
+  try {
+    let result = await firebase.auth().signInWithPopup(provider);
+
+  //  var token = result.credential.accessToken; // This gives you a Google Access Token. You can use it to access the Google API.
+  //  var user = result.user; // The signed-in user info.
+    
     console.log('User is going to be logged in!')
     let form = e.target.closest('form');
     form.reset();
-    form.closest('#modal-signin').classList.remove('shown');
-  }).catch(function(error) {
+    if (form.closest('#modal-signin')) {
+      form.closest('#modal-signin').classList.remove('shown');
+    } else {
+      form.closest('#modal-signup').classList.remove('shown');
+    }
+  } catch (error) {
     var errorCode = error.code;
     var errorMessage = error.message;
     var email = error.email;
     var credential = error.credential;    // The firebase.auth.AuthCredential type that was used.
     console.log('We have an error')
     console.log(errorMessage)
-  });
+  }
+
 }

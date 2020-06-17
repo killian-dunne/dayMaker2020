@@ -11,6 +11,7 @@ const SignUp = (props) => {
     const email = form['signup-email'].value;
     const password = form['signup-password'].value;
     const auth = window._DEFAULT_DATA[0];
+    const db = window._DEFAULT_DATA[1];
     auth.createUserWithEmailAndPassword(email, password)
       .catch(err => {
         console.log('There was an authentication error:');
@@ -19,6 +20,10 @@ const SignUp = (props) => {
       .then(result => {
         form.reset();
         form.closest('#modal-signup').classList.remove('shown');
+        db.collection('users').doc(result.user.uid).set({
+          authLevel: 'basic',
+          email,
+        });
         return auth.currentUser.updateProfile({
           displayName: firstName + " " + lastName
         })

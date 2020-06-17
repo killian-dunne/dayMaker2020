@@ -48,27 +48,33 @@ class Dashboard extends React.Component {
     let userRef = await db.collection('users').doc(this.props.user.uid);
     let querySnapshot;
     let user = await userRef.get();
-    if (user.data().authLevel === 'full') {
-      querySnapshot = await db.collection('plans').get();
-    } else {
-      querySnapshot = await db.collection('plans').where('user', '==', userRef).get();
-    }
-    querySnapshot.forEach(plan => {
-      getActions(plan.id).then(actions => {
-        myPlans.push({id: plan.id, data: {...plan.data(), actions}});
-        let orderedPlans = myPlans.sort((a, b) => {
-          if (compareDates(a.data.date.toDate(), b.data.date.toDate()) === 1) {
-            return -1;
-          } else {
-            return 1;
-          }
+
+    if (user.exists) {
+      if (user.data().authLevel === 'full') {
+        querySnapshot = await db.collection('plans').get();
+      } else {
+        querySnapshot = await db.collection('plans').where('user', '==', userRef).get();
+      }
+      querySnapshot.forEach(plan => {
+        getActions(plan.id).then(actions => {
+          myPlans.push({id: plan.id, data: {...plan.data(), actions}});
+          let orderedPlans = myPlans.sort((a, b) => {
+            if (compareDates(a.data.date.toDate(), b.data.date.toDate()) === 1) {
+              return -1;
+            } else {
+              return 1;
+            }
+          });
+          this.setState({plans: orderedPlans});
+        }).catch(err => {
+          console.log('Error getting actions', err.message)
         });
-        this.setState({plans: orderedPlans});
-      }).catch(err => {
-        console.log('Error getting actions', err.message)
       });
-    });
-    return;
+      return;
+    } else {
+      console.log('user dne in collection')
+    }
+
   }
 
   removePlan = (id) => {

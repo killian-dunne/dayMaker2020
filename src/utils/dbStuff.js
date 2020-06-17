@@ -107,3 +107,15 @@ export const getPlanByDate = async date => {
     console.log(err.message)
   }
 }
+
+export const addUserToCollection = async user => {
+  let db = window._DEFAULT_DATA[1];
+  let dbUser = await db.collection('users').doc(user.uid).get();
+  if (!dbUser.exists) {
+    await db.collection('users').doc(user.uid).set({
+      email: user.email,
+      authLevel: 'basic'
+    })
+  }
+  return;
+}

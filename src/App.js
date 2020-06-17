@@ -3,6 +3,7 @@ import Navbar from './components/Navbar';
 import Dashboard from './components/Dashboard';
 import SignUp from './components/SignUp';
 import SignIn from './components/SignIn';
+import { addUserToCollection } from './utils/dbStuff';
 
 
 class App extends React.Component {
@@ -19,9 +20,12 @@ class App extends React.Component {
     auth.onAuthStateChanged(user => {
       if (user) {
         console.log('user is logged in: ', user)
-        this.setState({
-          user: user
-        })
+        // Add collection user if needed
+        addUserToCollection(user).then(() => {
+          this.setState({
+            user: user
+          })
+        });
       } else {
         this.setState({
           user: null
