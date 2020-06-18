@@ -366,10 +366,10 @@ input.new-title:focus {
   height: 150px;
 }
 
-.tell-login a.user-state {
+.tell-login span.user-state {
   color: #555599;
 }
-.tell-login a.user-state:hover {
+.tell-login span.user-state:hover {
   text-decoration: underline;
   color: #555599;
   cursor: pointer;
@@ -733,7 +733,6 @@ td {
 
 .react-datepicker__day--selected.react-datepicker__day {
   background-color: #ffc107;
-  outline-color: #ffe0e0;
 }
 .react-datepicker__day--selected.react-datepicker__day:hover {
   background-color: #ffc107;

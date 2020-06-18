@@ -86,7 +86,7 @@
   height: 150px;
 }
 
-.tell-login a.user-state {
+.tell-login span.user-state {
     color: variables.$main-purple;
   &:hover {
     text-decoration: underline;

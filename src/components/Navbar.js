@@ -32,10 +32,6 @@ const Navbar = (props) => {
     auth.signOut();
   }
 
-  const handleChange = e => {
-    setSearch(e.target.value);
-  }
-
   const handleSearch = async e => {
     e.preventDefault();
     let planID = await getPlanByDate(search);
@@ -57,14 +53,12 @@ const Navbar = (props) => {
         <button className={`btn btn-warning userIcon ${userPresent}`}>{initials}</button>
         <h5 className={`user-state ${userPresent}`} onClick={signOut}>Sign Out</h5>
         <form className="form-inline" onSubmit={handleSearch}>
-          <DatePicker selected={search} onSelect={date => setSearch(date)} className="form-control mr-sm-2" placeholderText="Search Date" dateFormat="d-MMM-yy"/>
+          <DatePicker selected={search} onSelect={date => setSearch(date)} className="form-control mr-sm-2" placeholderText="03-Jun-20" dateFormat="d-MMM-yy"/>
           <button className="btn btn-outline-warning my-2 my-sm-0" disabled={buttonEnable} type="submit">Search</button>
         </form>
       </div>
     </nav>
   );
 }
-
-// Insert user icon K.D. for example
 
 export default Navbar;

@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { convertHeightToTime } from '../utils/dateStuff';
@@ -6,10 +6,11 @@ import { setAction } from '../utils/dbStuff';
 
 const ActionBox = (props) => {
   let height = props.height;
+  var [hideA, hideB] = ["", ""];
   if (height < 14) {
-    var [hideA, hideB] = ["hide", ""];
+    [hideA, hideB] = ["hide", ""];
   } else {
-    var [hideA, hideB] = ["", "hide"];
+    [hideA, hideB] = ["", "hide"];
   }
 
   const setHoverHeight = (e, enter) => {

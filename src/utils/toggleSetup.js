@@ -1,4 +1,3 @@
-import { addUserToCollection } from './dbStuff';
 const firebase = require('firebase');
 
 export const toggleSignup = (e) => {
@@ -21,13 +20,12 @@ export const toggleSignin = (e) => {
 export const googleLogin = async e => {
   e.persist();
   var provider = new firebase.auth.GoogleAuthProvider();
-  let db = window._DEFAULT_DATA[1];
   try {
     let result = await firebase.auth().signInWithPopup(provider);
 
   //  var token = result.credential.accessToken; // This gives you a Google Access Token. You can use it to access the Google API.
   //  var user = result.user; // The signed-in user info.
-    
+
     console.log('User is going to be logged in!')
     let form = e.target.closest('form');
     form.reset();

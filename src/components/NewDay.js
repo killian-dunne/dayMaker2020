@@ -16,7 +16,16 @@ class NewDay extends React.Component {
       displayNotification: 'none',
       displayNotificationText: 'Plan created!'
     }
+    this.dateRef = React.createRef();
   }
+
+  componentDidUpdate(prevProps, prevState) {
+    if (prevProps.user !== this.props.user && this.props.user) {
+      console.log(this.dateRef.current)
+      console.log(this.dateRef)
+    }
+  }
+
   componentDidMount() {
     this.interval = setInterval(this.tick, 1000);
   }
@@ -93,7 +102,7 @@ class NewDay extends React.Component {
         </div>
         <form onSubmit={this.handleSubmit}>
           <div className="form-center">
-            <DatePicker inline selected={this.state.planDate} onSelect={this.handleSelect}/>
+            <DatePicker inline selected={this.state.planDate} onSelect={this.handleSelect} ref={this.dateRef} autoFocus/>
             <input className="new-title form-control" type="text" value={this.state.planTitle} placeholder="Plan title" onChange={this.handleInput}/>
             <div className="tooltip-container">
               <button className="btn btn-outline-warning" disabled={buttonEnable} type="submit">Create</button>

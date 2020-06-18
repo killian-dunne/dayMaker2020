@@ -3,7 +3,7 @@ import DayPlan from './DayPlan';
 import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
 import { compareDates } from '../utils/dateStuff';
 import NewDay from './NewDay';
-import { getActions, setAction } from '../utils/dbStuff';
+import { getActions } from '../utils/dbStuff';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -176,7 +176,7 @@ class Dashboard extends React.Component {
       returnJSX =  (
         <div className="container plans-list">
           <div className="tell-login plan-box bg-light">
-            To get started <a className="user-state" onClick={toggleSignin}>Sign in</a> or <a onClick={toggleSignup} className="user-state">Sign Up</a>.
+            To get started <span className="user-state" onClick={toggleSignin}>Sign in</span> or <span onClick={toggleSignup} className="user-state">Sign Up</span>.
           </div>
         </div>
       );

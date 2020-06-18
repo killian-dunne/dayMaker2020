@@ -180,11 +180,12 @@ class DayPlan extends React.Component {
   }
 
   getActionHeight = (startTime, endTime) => {
+    var [endHours, endMinutes] =[0, 0];
     if (endTime === null){
-      var [endHours, endMinutes] = startTime.split(":");
+      [endHours, endMinutes] = startTime.split(":");
       endHours++;
     } else {
-      var [endHours, endMinutes] = endTime.split(":");
+      [endHours, endMinutes] = endTime.split(":");
     }
     let [hours, minutes] = startTime.split(':');
     let height = (endHours - hours) * hourHeight + (endMinutes - minutes) * hourHeight / 60;

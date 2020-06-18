@@ -2,7 +2,6 @@
 
 .react-datepicker__day--selected.react-datepicker__day {
   background-color: variables.$strong-yellow;
-  outline-color: variables.$gentle-pink;
   &:hover {background-color: variables.$strong-yellow;}
 }
 

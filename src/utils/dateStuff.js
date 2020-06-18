@@ -180,6 +180,7 @@ export const cleanInput = (text, increment = false) => { // return [text, proble
           }
           return [hourMinToString(text, 0), false]
         }
+        break;
       case 2:
         if (!isNaN(text)) {
           if (increment) {
@@ -187,6 +188,7 @@ export const cleanInput = (text, increment = false) => { // return [text, proble
           }
           return [hourMinToString(text, 0), false];
         }
+        break;
       case 3:
         if (handleAMPM(text)[0] !== text) {
           if (increment) {
@@ -201,15 +203,17 @@ export const cleanInput = (text, increment = false) => { // return [text, proble
           let [roundedH, roundedM] = roundTime(h, m);
           return [hourMinToString(roundedH, roundedM), false];
         }
+        break;
       case 4:
         [h, m] = [text.substring(0, 2), text.substring(2)];
         if (!isNaN(h) && !isNaN(m)) {
-          if (increment || (h == 12 && increment === null)) {
+          if (increment || (parseInt(h) == 12 && increment === null)) {
             h = parseInt(h) + 12;
           }
           let [roundedH, roundedM] = roundTime(h, m);
           return [hourMinToString(roundedH, roundedM), false];
         }
+        break;
       case 5:
       case 6:
         if (handleAMPM(text)[0] !== text) {
@@ -220,6 +224,7 @@ export const cleanInput = (text, increment = false) => { // return [text, proble
             return cleanInput(text.substring(0, text.length - 2), increment);
           }
         }
+        break;
       default:
         return ['Input is not formatted correctly', true];
     }
