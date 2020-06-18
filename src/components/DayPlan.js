@@ -6,7 +6,7 @@ import { deletePlan } from '../utils/dbStuff';
 import { enumerateHours, hourHeight, calculateTimeHeight, isToday, isTomorrow } from '../utils/lines&timer';
 import { compareDates, compareTimes, cleanInput, planDateFormat } from '../utils/dateStuff';
 import ActionBox from './ActionBox';
-import { faTrash } from '@fortawesome/free-solid-svg-icons';
+import { faTrash, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { setAction, deleteAction } from '../utils/dbStuff';
 
 export const hourDiv = ["00", "15", "30", "45"];
@@ -22,7 +22,8 @@ class DayPlan extends React.Component {
       tempStartTime: "",
       tempEndTime: "",
       openAddAction: false,
-      highlightDate: ""
+      highlightDate: "",
+      overlap: false
     }
     this.planDiv = React.createRef();
   }
@@ -50,7 +51,6 @@ class DayPlan extends React.Component {
     }
     if (prevProps.scrollToThis !== this.props.scrollToThis && this.props.scrollToThis) {
       document.querySelector('.gen-area').scrollTop = parseInt(this.props.position.substring(1));
-      console.log(this.props.title)
       this.setState({highlightDate: 'highlight-date'});
       setTimeout(()=> {
         this.setState({highlightDate: ""})
@@ -245,6 +245,10 @@ class DayPlan extends React.Component {
     });
   }
 
+  toggleOverlap = e => {
+    this.setState({ overlap: !this.state.overlap})
+  }
+
   changeStartTime = (e, time) => {
     if (!time) {
       time = e.target.value;
@@ -397,10 +401,12 @@ class DayPlan extends React.Component {
         );
     }
     let formattedDate = planDateFormat(this.props.date);
+    let overlapping = this.state.overlap ? 'overlap-yes' : 'overlap-no';
     return (
       <div id={`day-plan-${this.props.keyProp}`} className="plan-box bg-light plan-details" data-id={this.props.id} ref={this.planDiv}>
         <div className="title-box">
           <input value={this.props.title} className="h3 day-title" onChange={e => {this.props.renamePlan(e, this.props.id)}} onBlur={e => {this.props.updatePlan(e, this.props.id)}}/>
+          <FontAwesomeIcon icon={faLayerGroup} size="1x" className={`fa-icon plan-overlap hvr-icon-fade ${overlapping}`} onClick={this.toggleOverlap}/>
           <FontAwesomeIcon icon={faTrash} size="1x" className="fa-icon plan-trash hvr-buzz-out" onClick={this.handleDelete}/>
           <div className={`date ${this.state.highlightDate}`}>{formattedDate}</div>
         </div>

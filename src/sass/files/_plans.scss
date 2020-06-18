@@ -48,14 +48,16 @@
   padding-top: 30px;
   position: relative;
   border-radius: 10px 10px 0px 0px;
-}
-
-.title-box .date {
-  position: absolute;
-  bottom: 10px;
-  right: 30px;
-  display: none;
-  opacity: 1;
+  .date {
+    position: absolute;
+    bottom: 10px;
+    right: 30px;
+    display: none;
+    opacity: 1;
+  }
+  .fa-icon {
+    display: none;
+  }
 }
 
 .title-box .highlight-date {
@@ -69,8 +71,10 @@
   100% { opacity: 0 }
 }
 
-.title-box:hover .date {
-  display: block;
+.title-box:hover {
+  .date, .fa-icon {
+    display: block;
+  }
 }
 
 .day-title {
@@ -132,4 +136,10 @@ td {
   color: variables.$d-grey;
   top: 20px;
   right: 40px;
+}
+
+.plan-overlap {
+  top: 21px;
+  right: 60px;
+  color: variables.$d-grey;
 }

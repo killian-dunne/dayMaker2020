@@ -1,0 +1,26 @@
+/* Icon Fade */
+@use './variables';
+
+.hvr-icon-fade {
+  display: inline-block;
+  vertical-align: middle;
+  -webkit-transform: perspective(1px) translateZ(0);
+  transform: perspective(1px) translateZ(0);
+  box-shadow: 0 0 1px rgba(0, 0, 0, 0);
+}
+.hvr-icon-fade .hvr-icon {
+  -webkit-transform: translateZ(0);
+  transform: translateZ(0);
+  -webkit-transition-duration: 0.5s;
+  transition-duration: 0.5s;
+  -webkit-transition-property: color;
+  transition-property: color;
+}
+.hvr-icon-fade:hover, .hvr-icon-fade:focus, .hvr-icon-fade:active {
+  &.overlap-yes {
+    color: variables.$working-green;
+  }
+  &.overlap-no {
+    color: variables.$stopped-red;
+  }
+}
