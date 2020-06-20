@@ -453,6 +453,15 @@ div.action-box.hovered .action-icon {
   cursor: grabbing;
 }
 
+.action-box:hover .full-text.mid-height {
+  top: 0px;
+}
+
+.action-box .full-text.mid-height {
+  position: relative;
+  top: -5px;
+}
+
 div.action-box.faded {
   background-color: #757586;
   transition-delay: 1s;

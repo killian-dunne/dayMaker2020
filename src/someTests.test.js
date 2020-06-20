@@ -5,35 +5,37 @@
 //   });
 // });
 
-import { isLater, cleanInput, handleAMPM, roundTime } from './utils/dateStuff';
+import { isLater, cleanInput, handleAMPM, roundTime, timeDifferenceBetween } from './utils/dateStuff';
+import { checkForOverlap, countActionsToShift } from './utils/actionOverlap';
+
 
 describe('Testing isLater', () => {
 
   test('isLater(9am, 9am)', () => {
-    expect(isLater('09:00', '09:00')[1]).toEqual(true)
+    expect(isLater('09:00', '09:00')[1]).toEqual(0)
   });
 
   test('isLater(10am, 9am)', () => {
-    expect(isLater('10:00', '09:00')[1]).toEqual(true)
+    expect(isLater('10:00', '09:00')[1]).toEqual(1)
   })
 
   test('isLater(9:15am, 9am)', () => {
-    expect(isLater('09:15', '09:00')[1]).toEqual(true)
+    expect(isLater('09:15', '09:00')[1]).toEqual(1)
   })
   test('isLater(12pm, 12pm)', () => {
-    expect(isLater('12:00', '12:00')[1]).toEqual(true)
+    expect(isLater('12:00', '12:00')[1]).toEqual(0)
   })
   test('isLater(8am, 9am)', () => {
-    expect(isLater('08:00', '09:00')[1]).toEqual(false)
+    expect(isLater('08:00', '09:00')[1]).toEqual(-1)
   })
   test('isLater(8:45am, 9am)', () => {
-    expect(isLater('8:45', '09:00')[1]).toEqual(false)
+    expect(isLater('8:45', '09:00')[1]).toEqual(-1)
   })
   test('isLater(10pm, 9am)', () => {
-    expect(isLater('22:00', '09:00')[1]).toEqual(true)
+    expect(isLater('22:00', '09:00')[1]).toEqual(1)
   })
   test('isLater(10am, 10pm)', () => {
-    expect(isLater('10:00', '22:00')[1]).toEqual(false)
+    expect(isLater('10:00', '22:00')[1]).toEqual(-1)
   })
 
 });
@@ -120,4 +122,159 @@ describe('roundTime tests', () => {
   test('roundTime(22, 30)', () => {
     expect(roundTime(22, 30)).toEqual([22, 30])
   });
+})
+
+let actions = [{
+  id: 'action0',
+  data: {
+    text: 'Hello there',
+    times: {
+      startTime: '09:00',
+      endTime: '10:00'
+    },
+    completed: false
+  },
+},
+{ id: 'action1',
+  data: {
+    text: 'Second action',
+    times: {
+      startTime: '09:30',
+      endTime: '10:45'
+    },
+    completed: false
+  },
+},
+{ id: 'action2',
+  data: {
+    text: 'Text, #3',
+    times: {
+      startTime: '11:15',
+      endTime: '11:30'
+    },
+    completed: false
+  }
+},
+{ id: 'action3',
+  data: {
+    text: 'Action number 4',
+    times: {
+      startTime: '18:00',
+      endTime: '18:30'
+    },
+    completed: false
+  },
+},
+{ id: 'action4',
+  data: {
+    text: 'Yet another, it`s 5',
+    times: {
+      startTime: '18:00',
+      endTime: '18:45'
+    },
+    completed: false
+  },
+},
+{ id: 'action5',
+  data: {
+    text: 'Keep going, #6',
+    times: {
+      startTime: '18:45',
+      endTime: '19:00'
+    },
+    completed: false
+  }
+},
+{ id: 'action6',
+  data: {
+    text: 'Nope, #7',
+    times: {
+      startTime: '19:30',
+      endTime: '20:00'
+    },
+    completed: false
+  }
+}];
+
+describe('Testing check for Overlap', () => {
+
+  test('checkForOverlap("09:00", "10:00", actions)', () => {
+    expect(checkForOverlap('09:00', '10:00', actions)).toEqual([0, 1]);
+  });
+
+  test('checkForOverlap("09:00", "09:30", actions)', () => {
+    expect(checkForOverlap('09:00', '09:30', actions)).toEqual([0]);
+  });
+
+  test('checkForOverlap("10:00", "10:15", actions)', () => {
+    expect(checkForOverlap('10:00', '10:15', actions)).toEqual([1]);
+  });
+
+  test('checkForOverlap("14:00", "15:00", actions)', () => {
+    expect(checkForOverlap('14:00', '15:00', actions)).toEqual([]);
+  });
+
+  test('checkForOverlap("18:30", "18:45", actions)', () => {
+    expect(checkForOverlap('18:30', '18:45', actions)).toEqual([4]);
+  });
+
+  test('checkForOverlap("21:00", "22:00", actions)', () => {
+    expect(checkForOverlap('21:00', '22:00', actions)).toEqual([]);
+  });
+})
+
+describe('Testing timeDifferenceBetween', () => {
+  test('timeDifferenceBetween("09:00", "10:00")', () => {
+    expect(timeDifferenceBetween("09:00", "10:00")).toEqual(60)
+  })
+
+  test('timeDifferenceBetween("09:00", "09:30")', () => {
+    expect(timeDifferenceBetween("09:00", "09:30")).toEqual(30)
+  })
+
+  test('timeDifferenceBetween("10:00", "10:15")', () => {
+    expect(timeDifferenceBetween("10:00", "10:15")).toEqual(15)
+  })
+
+  test('timeDifferenceBetween("09:00", "08:00")', () => {
+    expect(timeDifferenceBetween("09:00", "08:00")).toEqual(-60)
+  })
+
+  test('timeDifferenceBetween("12:00", "14:30")', () => {
+    expect(timeDifferenceBetween("12:00", "14:30")).toEqual(150)
+  })
+
+  test('timeDifferenceBetween("18:00", "18:00")', () => {
+    expect(timeDifferenceBetween("18:00", "18:00")).toEqual(0)
+  })
+
+  test('timeDifferenceBetween("21:00", "10:00")', () => {
+    expect(timeDifferenceBetween("21:00", "10:00")).toEqual((-11) * 60)
+  })
+})
+
+describe('testing countActionsToShift', () => {
+  test('countActionsToShift("10:00", 1, actions, 30)', () => {
+    expect(countActionsToShift("10:00", 1, actions, 30)).toEqual(1)
+  })
+
+  test('countActionsToShift("09:15", 0, actions, 30)', () => {
+    expect(countActionsToShift("09:15", 0, actions, 30)).toEqual(2)
+  })
+
+  test('countActionsToShift("18:15", 3, actions, 15)', () => {
+    expect(countActionsToShift("18:15", 3, actions, 15)).toEqual(3)
+  })
+
+  test('countActionsToShift("10:00", 1, actions, 45)', () => {
+    expect(countActionsToShift("10:00", 1, actions, 45)).toEqual(2)
+  })
+
+  test('countActionsToShift("18:15", 3, actions, 15)', () => {
+    expect(countActionsToShift("18:15", 3, actions, 15)).toEqual(3)
+  })
+
+  test('countActionsToShift("18:15", 3, actions, 45)', () => {
+    expect(countActionsToShift("18:15", 3, actions, 45)).toEqual(4)
+  })
 })

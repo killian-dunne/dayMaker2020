@@ -4,10 +4,11 @@ import { faTint } from '@fortawesome/free-solid-svg-icons';
 import ActionSetup from './ActionSetup';
 import { deletePlan } from '../utils/dbStuff';
 import { enumerateHours, hourHeight, calculateTimeHeight, isToday, isTomorrow } from '../utils/lines&timer';
-import { compareDates, compareTimes, cleanInput, planDateFormat } from '../utils/dateStuff';
+import { compareDates, compareTimes, cleanInput, planDateFormat, timeAddition } from '../utils/dateStuff';
 import ActionBox from './ActionBox';
 import { faTrash, faLayerGroup } from '@fortawesome/free-solid-svg-icons';
 import { setAction, deleteAction } from '../utils/dbStuff';
+import { countActionsToShift, shiftActions } from '../utils/actionOverlap';
 
 export const hourDiv = ["00", "15", "30", "45"];
 
@@ -121,7 +122,6 @@ class DayPlan extends React.Component {
   }
 
   openAction = (e, id)=> {
-    console.log('action opened')
     let box = e.target;
     let icon = box.closest('.action-icon');
     if (!box.closest('.action-box') || (icon && icon.classList.contains('action-edit') && !box.classList.contains('faded'))) {
@@ -276,6 +276,25 @@ class DayPlan extends React.Component {
   }
 
   addOrUpdateAction = async (text, startTime, endTime, planId, completed, actionID) => {
+    // Check if action overlaps with another time
+    if (!this.state.overlap) {
+      let actions = this.props.actions;
+      let currentActionIdx;
+      if (actionID) {
+        currentActionIdx = actions.findIndex(action => action.id === actionID);
+      }
+      let [firstIdx, shiftMins, numActions] = shiftActions(startTime, endTime, actions, currentActionIdx);
+
+      for (let i = firstIdx; i < firstIdx + numActions; i++) {
+        if (currentActionIdx !== firstIdx) {
+          let updatedStart = timeAddition(actions[i].data.times.startTime, shiftMins);
+          let updatedEnd = timeAddition(actions[i].data.times.endTime, shiftMins);
+          await setAction(undefined, updatedStart, updatedEnd, planId, undefined, actions[i].id);
+        }
+
+      }
+    }
+
     if (actionID) {
       await setAction(text, startTime, endTime, planId, completed, actionID);
     } else {

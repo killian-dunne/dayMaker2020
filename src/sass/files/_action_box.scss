@@ -17,15 +17,7 @@ div.action-box {
 }
 
 div.action-box.selected {
-//   background: repeating-linear-gradient(
-//   -45deg,
-//   variables.$back-yellow,
-//   variables.$back-yellow .3px,
-//   variables.$main-purple .3px,
-//   variables.$main-purple 10px
-// );
-background: linear-gradient(to top left, black, variables.$main-purple)
-//  background: repeating-linear-gradient(-45deg, #fff5b0 0px, #555599 1px, #555599 11px, #fff5b0 12px);
+  background: linear-gradient(to top left, black, variables.$main-purple)
 }
 
 div.action-box.hovered {
@@ -86,13 +78,23 @@ div.action-box.hovered .action-icon {
   cursor: grabbing;
 }
 
+.action-box:hover .full-text.mid-height {
+  top: 0px;
+}
+
+.action-box .full-text.mid-height {
+  position: relative;
+  top: -5px ;
+}
+
+
 div.action-box.faded {
   background-color: variables.$dull-purple;
   transition-delay: 1s;
 }
 
 div.action-box.faded .gen-writing {
-  opacity: 0.5; 
+  opacity: 0.5;
 }
 
 .action-box .action-times {

@@ -12,6 +12,7 @@ const ActionBox = (props) => {
   } else {
     [hideA, hideB] = ["", "hide"];
   }
+  let midSize = (height > 14 && height < 30) ? "mid-height" : "";
 
   const setHoverHeight = (e, enter) => {
     let box = e.target.closest('.action-box');
@@ -139,7 +140,7 @@ const ActionBox = (props) => {
         <div className="action-icon action-trash fa-icon" onClick={e => props.removeAction(e, props.id)}>
           <FontAwesomeIcon icon={faTrash} size="1x" className="delete-icon hvr-buzz-out"/>
         </div>
-        <div className={`full-text ${hideA}`}>
+        <div className={`full-text ${hideA} ${midSize}`}>
           <div className="inline">
             {props.text}
           </div>

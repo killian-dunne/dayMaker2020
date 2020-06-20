@@ -36,13 +36,13 @@ const ActionSetup = (props) => {
       setError('Text cannot be blank');
     } else {
       let [laterMessage, later] = isLater(startText, endText);
-      if (later) {
+      if (later !== -1) {
         setError(laterMessage);
       } else {
         if (props.actionID) {
           props.setAction(props.text, startText, endText, props.planId, props.completed, props.actionID);
         } else {
-          props.setAction(props.text);
+          props.setAction(props.text, startText, endText, props.planId, false, undefined);
         }
       }
     }
@@ -98,12 +98,13 @@ const ActionSetup = (props) => {
       let [output, error] = isLater(firstTimeInput.current.value, text);
       let secondErrDiv = e.target.nextSibling.nextSibling;
       let firstInput = e.target === firstTimeInput.current;
-      if (!firstInput && error) { // Second input is not after first
+      if (!firstInput && error !== -1) { // Second input is not after first
         secondErrDiv.classList.remove('hide');
         secondErrDiv.textContent = output;
       } else {
         if (!secondErrDiv.classList.contains('hide') && secondErrDiv.classList.contains('time-error')) {
           secondErrDiv.classList.add('hide');
+          secondErrDiv.textContent = '';
         }
         e.target.value = text;
         if (firstInput) {
@@ -155,7 +156,7 @@ const ActionSetup = (props) => {
           <div className="error-message submission-error">
             {error}
           </div>
-
+          <br/>
         <button type="submit" className="btn btn-outline-warning">Save</button>
         </form>
       </div>

@@ -242,17 +242,19 @@ export const handleAMPM = (text) => {
   }
 }
 
-export const isLater = (timeA, timeB) => { // true if timeA after timeB
+export const isLater = (timeA, timeB) => { // 1 if timeA after timeB
+                                           // 0 if equal times
+                                           // -1 if timeB after timeA
   let [hA, mA] = timeA.split(":");
   let [hB, mB] = timeB.split(":");
   [hA, mA] = [parseInt(hA), parseInt(mA)];
   [hB, mB] = [parseInt(hB), parseInt(mB)];
   if (hA > hB || (hA === hB && mA > mB)) {
-    return ['Set the end time after the start time', true];
+    return ['Set the end time after the start time', 1];
   } else if (hA === hB && mA === mB) {
-    return [`It should take at least ${hourDiv[1]} minutes`, true];
+    return [`It should take at least ${hourDiv[1]} minutes`, 0];
   } else {
-    return ['Yay', false];
+    return ['Yay', -1];
   }
 }
 
@@ -261,4 +263,22 @@ export const secondsToDate = (secs) => {
     var t = new Date(1970, 0, 1);
     t.setSeconds(secs);
     return t;
+}
+
+export const timeDifferenceBetween = (timeA, timeB) => { // how many minutes later is timeB than timeA
+  let timeDifference = 0;
+  if (isLater(timeA, timeB)[1] === 1) {
+    while (isLater(timeA, timeB)[1] === 1) {
+      timeDifference -= parseInt(hourDiv[1]);
+      timeA = timeAddition(timeA, -hourDiv[1]);
+    }
+  } else if (isLater(timeB, timeA)[1] === 1) {
+    while (isLater(timeB, timeA)[1] === 1) {
+      timeDifference += parseInt(hourDiv[1]);
+      timeB = timeAddition(timeB, -hourDiv[1]);
+    }
+  } else {
+    return 0;
+  }
+  return timeDifference;
 }

@@ -19,12 +19,7 @@ class NewDay extends React.Component {
     this.dateRef = React.createRef();
   }
 
-  componentDidUpdate(prevProps, prevState) {
-    if (prevProps.user !== this.props.user && this.props.user) {
-      console.log(this.dateRef.current)
-      console.log(this.dateRef)
-    }
-  }
+
 
   componentDidMount() {
     this.interval = setInterval(this.tick, 1000);
