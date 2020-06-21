@@ -37,6 +37,7 @@ export const setAction = async (text, startTime, endTime, planId, completed, act
 }
 
 export const deleteAction = async (planID, id) => {
+  debugger;
   const db = window._DEFAULT_DATA[1];
   try {
     await db.collection('plans').doc(planID).collection('actions').doc(id).delete();
@@ -62,7 +63,7 @@ export const deletePlan = async id => {
     await db.collection('plans').doc(id).delete();
     console.log('plan deleted:', id)
     snapshot.forEach(action => {
-      action.delete();
+      action.ref.delete();
     });
   } catch (err) {
     console.log('Error when trying to delete plan with id', id);

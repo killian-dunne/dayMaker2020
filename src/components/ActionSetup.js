@@ -68,7 +68,7 @@ const ActionSetup = (props) => {
     if (!problem) {
       if (e.key === 'Enter') {
         e.preventDefault();
-        if (e.target.nodeName === 'input') {
+        if (e.target.nodeName === 'INPUT') {
           handleInput(e)
         }
         handleSubmit(e);
@@ -153,7 +153,7 @@ const ActionSetup = (props) => {
           <div className="error-message time-error hide third-error">
             Compare this time to the start time.
           </div>
-          <div className="error-message submission-error">
+          <div className="error-message hide submission-error">
             {error}
           </div>
           <br/>

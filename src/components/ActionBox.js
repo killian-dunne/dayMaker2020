@@ -6,13 +6,16 @@ import { setAction } from '../utils/dbStuff';
 
 const ActionBox = (props) => {
   let height = props.height;
+  if (props.startTime && parseInt(props.startTime.substring(3)) === 0) {
+    height ++;
+  }
   var [hideA, hideB] = ["", ""];
-  if (height < 14) {
+  if (height < 16) {
     [hideA, hideB] = ["hide", ""];
   } else {
     [hideA, hideB] = ["", "hide"];
   }
-  let midSize = (height > 14 && height < 30) ? "mid-height" : "";
+  let midSize = (height > 16 && height < 30) ? "mid-height" : "";
   let overlap = props.overlap ? 'overlap' : '';
 
   const setHoverHeight = (e, enter) => {

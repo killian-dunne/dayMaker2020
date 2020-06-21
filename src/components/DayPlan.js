@@ -124,7 +124,7 @@ class DayPlan extends React.Component {
   openAction = (e, id)=> {
     let box = e.target;
     let icon = box.closest('.action-icon');
-    if (!box.closest('.action-box') || (icon && icon.classList.contains('action-edit') && !box.classList.contains('faded'))) {
+    if (!box.closest('.action-box') || (icon && icon.classList.contains('action-edit') && !icon.closest('.action-box').classList.contains('faded'))) {
       let startTime, endTime, text;
       if (id) {
         let actions = this.props.actions;
@@ -278,7 +278,7 @@ class DayPlan extends React.Component {
   addOrUpdateAction = async (text, startTime, endTime, planId, completed, actionID) => {
     // Check if action overlaps with another time
     let actions = this.props.actions;
-    if (!this.state.overlap) {
+    if (!this.state.overlap && startTime && endTime) {
       let currentActionIdx;
       if (actionID) {
         currentActionIdx = actions.findIndex(action => action.id === actionID);
@@ -314,8 +314,17 @@ class DayPlan extends React.Component {
   }
 
   removeAction = async (e, id) => {
-    await deleteAction(this.props.id, id);
-    this.props.loadActions(this.props.id);
+    if (e) {
+      let box = e.target.closest('.action-box');
+      if (box && !box.classList.contains('faded')) {
+        await deleteAction(this.props.id, id);
+        this.props.loadActions(this.props.id);
+      }
+    } else {
+      await deleteAction(this.props.id, id);
+      this.props.loadActions(this.props.id);
+    }
+
   }
 
   render () {

@@ -73,7 +73,7 @@ class Dashboard extends React.Component {
       });
       return;
     } else {
-      console.log('user dne in collection')
+      console.log('user DNE in collection')
     }
 
   }
@@ -89,7 +89,6 @@ class Dashboard extends React.Component {
     let plans = myPlans.map(plan => {
       if (plan.id === planId) {
         plan.data.actions = myActions;
-        debugger;
         plan.overlappingActions = overlapActions(myActions);
       }
       return plan;

@@ -26,7 +26,7 @@ export const googleLogin = async e => {
   //  var token = result.credential.accessToken; // This gives you a Google Access Token. You can use it to access the Google API.
   //  var user = result.user; // The signed-in user info.
 
-    console.log('User is going to be logged in!')
+    console.log('Using google login')
     let form = e.target.closest('form');
     form.reset();
     if (form.closest('#modal-signin')) {
