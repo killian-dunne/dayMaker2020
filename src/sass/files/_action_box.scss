@@ -14,6 +14,9 @@ div.action-box {
   -moz-box-sizing: border-box;    /* Firefox, other Gecko */
   box-sizing: border-box;
   transition: 0s opacity;
+  &.overlap {
+    left: 100px;
+  }
 }
 
 div.action-box.selected {
@@ -28,7 +31,7 @@ div.action-box.hovered .full-text {
   text-align: left;
   white-space: normal;
   overflow: visible;
-  width: 150px;
+  width: 140px;
   overflow-wrap: break-word;
   word-wrap: break-word;
 

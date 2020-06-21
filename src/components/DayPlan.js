@@ -24,7 +24,7 @@ class DayPlan extends React.Component {
       tempEndTime: "",
       openAddAction: false,
       highlightDate: "",
-      overlap: false
+      overlap: false,
     }
     this.planDiv = React.createRef();
   }
@@ -277,8 +277,8 @@ class DayPlan extends React.Component {
 
   addOrUpdateAction = async (text, startTime, endTime, planId, completed, actionID) => {
     // Check if action overlaps with another time
+    let actions = this.props.actions;
     if (!this.state.overlap) {
-      let actions = this.props.actions;
       let currentActionIdx;
       if (actionID) {
         currentActionIdx = actions.findIndex(action => action.id === actionID);
@@ -291,7 +291,6 @@ class DayPlan extends React.Component {
           let updatedEnd = timeAddition(actions[i].data.times.endTime, shiftMins);
           await setAction(undefined, updatedStart, updatedEnd, planId, undefined, actions[i].id);
         }
-
       }
     }
 
@@ -352,7 +351,8 @@ class DayPlan extends React.Component {
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
-                              plan={this.props.plan}/>
+                              plan={this.props.plan}
+                              overlap={this.props.overlappingActions.includes(a[0][0])}/>
                 }
               </th>
             </tr>
@@ -373,7 +373,8 @@ class DayPlan extends React.Component {
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
-                              plan={this.props.plan}/>
+                              plan={this.props.plan}
+                              overlap={this.props.overlappingActions.includes(a[1][0])}/>
                 }
               </td>
             </tr>
@@ -392,7 +393,8 @@ class DayPlan extends React.Component {
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
-                              plan={this.props.plan}/>
+                              plan={this.props.plan}
+                              overlap={this.props.overlappingActions.includes(a[2][0])}/>
                 }
               </td>
             </tr>
@@ -411,7 +413,8 @@ class DayPlan extends React.Component {
                               date={this.props.date}
                               planID={this.props.id}
                               addOrUpdateAction={this.addOrUpdateAction}
-                              plan={this.props.plan}/>
+                              plan={this.props.plan}
+                              overlap={this.props.overlappingActions.includes(a[3][0])}/>
                 }
               </td>
             </tr>

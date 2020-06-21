@@ -4,6 +4,7 @@ import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
 import { compareDates } from '../utils/dateStuff';
 import NewDay from './NewDay';
 import { getActions } from '../utils/dbStuff';
+import { overlapActions } from '../utils/actionOverlap';
 
 class Dashboard extends React.Component {
   constructor(props) {
@@ -88,6 +89,8 @@ class Dashboard extends React.Component {
     let plans = myPlans.map(plan => {
       if (plan.id === planId) {
         plan.data.actions = myActions;
+        debugger;
+        plan.overlappingActions = overlapActions(myActions);
       }
       return plan;
     });
@@ -150,6 +153,9 @@ class Dashboard extends React.Component {
       let d = new Date(1970, 0, 1, 1);
       d.setSeconds(data.date.seconds);
       let scrollToThis = id === this.props.searchedPlan;
+      if (plan.overlappingActions === undefined) {
+        plan.overlappingActions = [];
+      }
       return <DayPlan key={idx}
                       plan={data}
                       keyProp={idx}
@@ -165,6 +171,7 @@ class Dashboard extends React.Component {
                       updatePlan={this.updatePlan}
                       removePlan={this.removePlan}
                       scrollToThis={scrollToThis}
+                      overlappingActions={plan.overlappingActions}
                       />
     });
   }

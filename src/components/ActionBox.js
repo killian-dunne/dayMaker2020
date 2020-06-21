@@ -13,6 +13,7 @@ const ActionBox = (props) => {
     [hideA, hideB] = ["", "hide"];
   }
   let midSize = (height > 14 && height < 30) ? "mid-height" : "";
+  let overlap = props.overlap ? 'overlap' : '';
 
   const setHoverHeight = (e, enter) => {
     let box = e.target.closest('.action-box');
@@ -129,7 +130,7 @@ const ActionBox = (props) => {
   }
 
   return (
-    <div id={props.id} className="action-box" style={{height: height +'px'}} onClick={selectOrComplete} onMouseDown={handleDownClick} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
+    <div id={props.id} className={`action-box ${overlap}`} style={{height: height +'px'}} onClick={selectOrComplete} onMouseDown={handleDownClick} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
       <div className="gen-writing">
         <div className="action-icon action-check fa-icon" onClick={toggleCompleted}>
           <FontAwesomeIcon icon={faCheckSquare} size="1x" className="check-icon hvr-grow"/>

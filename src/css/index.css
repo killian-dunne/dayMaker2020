@@ -392,6 +392,9 @@ div.action-box {
   box-sizing: border-box;
   transition: 0s opacity;
 }
+div.action-box.overlap {
+  left: 100px;
+}
 
 div.action-box.selected {
   background: linear-gradient(to top left, black, #555599);
@@ -405,7 +408,7 @@ div.action-box.hovered .full-text {
   text-align: left;
   white-space: normal;
   overflow: visible;
-  width: 150px;
+  width: 140px;
   overflow-wrap: break-word;
   word-wrap: break-word;
   -ms-word-break: break-all;

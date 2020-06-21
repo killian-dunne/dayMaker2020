@@ -53,3 +53,19 @@ export const countActionsToShift = (newActionEnd, firstIndex, actions, shiftMins
   }
   return numActions;
 }
+
+export const overlapActions = (actions) => {
+  let idList = [];
+  for (let i = 0; i < actions.length - 1; i++ ) {
+    if (
+      isLater(actions[i].data.times.endTime, actions[i + 1].data.times.startTime)[1] === 1 &&
+      isLater(actions[i + 1].data.times.startTime, actions[i].data.times.startTime)[1] !== -1 &&
+      !idList.includes(actions[i].id) &&
+      !idList.includes(actions[i + 1].id)
+    ) {
+      idList.push(actions[i + 1].id)
+    }
+  }
+
+  return idList;
+}

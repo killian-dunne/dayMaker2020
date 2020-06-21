@@ -6,7 +6,7 @@
 // });
 
 import { isLater, cleanInput, handleAMPM, roundTime, timeDifferenceBetween } from './utils/dateStuff';
-import { checkForOverlap, countActionsToShift } from './utils/actionOverlap';
+import { checkForOverlap, countActionsToShift, overlapActions } from './utils/actionOverlap';
 
 
 describe('Testing isLater', () => {
@@ -38,6 +38,9 @@ describe('Testing isLater', () => {
     expect(isLater('10:00', '22:00')[1]).toEqual(-1)
   })
 
+  test('isLater("10:00", "09:30")', () => {
+    expect(isLater('10:00', '09:30')[1]).toEqual(1);
+  })
 });
 
 describe('handleAMPM tests', () => {
@@ -278,3 +281,10 @@ describe('testing countActionsToShift', () => {
     expect(countActionsToShift("18:15", 3, actions, 45)).toEqual(4)
   })
 })
+
+describe('Testing overlapActions', () => {
+  test('overlapActions(actions)', () => {
+    expect(overlapActions(actions)).toEqual(['action1', 'action4'])
+  })
+
+});
