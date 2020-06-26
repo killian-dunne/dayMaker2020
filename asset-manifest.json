@@ -1,0 +1,25 @@
+{
+  "files": {
+    "main.css": "/dayMaker/static/css/main.38daaea4.chunk.css",
+    "main.js": "/dayMaker/static/js/main.9e0153ec.chunk.js",
+    "main.js.map": "/dayMaker/static/js/main.9e0153ec.chunk.js.map",
+    "runtime-main.js": "/dayMaker/static/js/runtime-main.ffd3aa49.js",
+    "runtime-main.js.map": "/dayMaker/static/js/runtime-main.ffd3aa49.js.map",
+    "static/css/2.ecffae5e.chunk.css": "/dayMaker/static/css/2.ecffae5e.chunk.css",
+    "static/js/2.d146c3f6.chunk.js": "/dayMaker/static/js/2.d146c3f6.chunk.js",
+    "static/js/2.d146c3f6.chunk.js.map": "/dayMaker/static/js/2.d146c3f6.chunk.js.map",
+    "index.html": "/dayMaker/index.html",
+    "precache-manifest.96ff0631398e088e412cd781dc1368f9.js": "/dayMaker/precache-manifest.96ff0631398e088e412cd781dc1368f9.js",
+    "service-worker.js": "/dayMaker/service-worker.js",
+    "static/css/2.ecffae5e.chunk.css.map": "/dayMaker/static/css/2.ecffae5e.chunk.css.map",
+    "static/css/main.38daaea4.chunk.css.map": "/dayMaker/static/css/main.38daaea4.chunk.css.map",
+    "static/js/2.d146c3f6.chunk.js.LICENSE.txt": "/dayMaker/static/js/2.d146c3f6.chunk.js.LICENSE.txt"
+  },
+  "entrypoints": [
+    "static/js/runtime-main.ffd3aa49.js",
+    "static/css/2.ecffae5e.chunk.css",
+    "static/js/2.d146c3f6.chunk.js",
+    "static/css/main.38daaea4.chunk.css",
+    "static/js/main.9e0153ec.chunk.js"
+  ]
+}
