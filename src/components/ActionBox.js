@@ -1,10 +1,10 @@
-import React from 'react';
+import React, { useRef, useEffect } from 'react';
 import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
 import { faTrash, faEdit, faCheckSquare } from '@fortawesome/free-solid-svg-icons';
 import { convertHeightToTime } from '../utils/dateStuff';
-import { setAction } from '../utils/dbStuff';
 
 const ActionBox = (props) => {
+  const actionBox = useRef(null);
   let height = props.height;
   if (props.startTime && parseInt(props.startTime.substring(3)) === 0) {
     height ++;
@@ -17,6 +17,12 @@ const ActionBox = (props) => {
   }
   let midSize = (height > 16 && height < 30) ? "mid-height" : "";
   let overlap = props.overlap ? 'overlap' : '';
+
+  useEffect(() => {
+    if (props.completed) {
+      toggleCompleted();
+    }
+  }, [])
 
   const setHoverHeight = (e, enter) => {
     let box = e.target.closest('.action-box');
@@ -51,15 +57,19 @@ const ActionBox = (props) => {
     }
     box.style.top = top;
   }
-
+ 
   const toggleCompleted = e => {
-    e.stopPropagation();
-    let box = e.target.closest('.action-box');
+    let box;
+    if (e) {
+      e.stopPropagation();
+      box = e.target.closest('.action-box');
+    } else {
+      box = actionBox.current;
+    }
     let textArea = box.querySelector('.inline');
-    let completing = textArea.classList.contains('completed');
+    let completing = !textArea.classList.contains('completed');
     textArea.classList.toggle('completed');
     box.classList.toggle('faded');
-    let classes = ['hvr-grow', 'hvr-rotate', 'hvr-buzz-out'];
     box.querySelectorAll('svg').forEach(icon => { // remove animations on icons
       if (icon.classList.contains('check-icon')) icon.classList.toggle('hvr-grow');
       if (icon.classList.contains('edit-icon')) icon.classList.toggle('hvr-rotate');
@@ -133,7 +143,14 @@ const ActionBox = (props) => {
   }
 
   return (
-    <div id={props.id} className={`action-box ${overlap}`} style={{height: height +'px'}} onClick={selectOrComplete} onMouseDown={handleDownClick} onMouseEnter={e => setHoverHeight(e, true)} onMouseLeave={setHoverHeight}>
+    <div  id={props.id} 
+          className={`action-box ${overlap}`} 
+          style={{height: height + 'px'}} 
+          onClick={selectOrComplete} 
+          onMouseDown={handleDownClick} 
+          onMouseEnter={e => setHoverHeight(e, true)} 
+          onMouseLeave={setHoverHeight}
+          ref={actionBox}>
       <div className="gen-writing">
         <div className="action-icon action-check fa-icon" onClick={toggleCompleted}>
           <FontAwesomeIcon icon={faCheckSquare} size="1x" className="check-icon hvr-grow"/>

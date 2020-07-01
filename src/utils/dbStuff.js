@@ -26,6 +26,7 @@ export const setAction = async (text, startTime, endTime, planId, completed, act
   if (startTime !== undefined && endTime !== undefined) {
     data.times = {startTime, endTime};
   }
+  console.log('about to set completed to ', completed);
   if (completed !== undefined) {
     data.completed = completed;
   }
