@@ -3,6 +3,7 @@ import { toggleSignup, toggleSignin } from '../utils/toggleSetup';
 import { getPlanByDate } from '../utils/dbStuff';
 import DatePicker from 'react-datepicker';
 import "react-datepicker/dist/react-datepicker.css";
+import logo from '../img/logo.png';
 
 const Navbar = (props) => {
   let [search, setSearch] = useState('');
@@ -41,7 +42,7 @@ const Navbar = (props) => {
   return(
     <nav className="navbar navbar-expand-lg navbar-light bg-light" id="nav-bootstrap-overrides">
       <div className="row center navDiv">
-        <img src="./img/logo.png" alt=":)" className="logo"/>
+        <img src={logo} alt=":)" className="logo"/>
         <h1 className="heading">DayMaker</h1>
       </div>
       <button className="navbar-toggler" type="button" data-toggle="collapse" data-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
