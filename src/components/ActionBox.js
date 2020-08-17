@@ -35,8 +35,8 @@ const ActionBox = (props) => {
       box.classList.remove('hovered');
     }
     let increment = 20;
-    if (height < 14) {
-      if (box.closest(':hover') === box) {
+    if (height < 16) {
+      if (box.parentNode.querySelector(':hover') === box) {
         textArea.classList.remove('hide');
         ellipArea.classList.add('hide');
       } else {
@@ -134,9 +134,9 @@ const ActionBox = (props) => {
               }
             }
           }
-          clickedBox.classList.remove('dragging');
           handleSelect(eA); // cancel(/duplicate) toggle select
         }
+        clickedBox.classList.remove('dragging');
         document.body.onmousemove = document.body.onmouseup = null;
       };
     }

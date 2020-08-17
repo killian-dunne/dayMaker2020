@@ -421,6 +421,9 @@ div.action-box.hovered .full-text {
   -moz-hyphens: auto;
   -webkit-hyphens: auto;
   hyphens: auto;
+}
+
+div.action-box.action-box.hovered:not(.selected) .full-text {
   cursor: auto;
 }
 
@@ -448,11 +451,11 @@ div.action-box.hovered .action-icon {
   top: -10px;
 }
 
-.action-box.selected {
+div.action-box.action-box.hovered.selected {
   cursor: grab;
 }
 
-.action-box.dragging {
+div.action-box.action-box.hovered.dragging {
   cursor: grabbing;
 }
 
